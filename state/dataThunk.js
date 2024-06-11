@@ -56,8 +56,8 @@ export const getGroupOrdersThunk = (stepId, storageId, token) => async (dispatch
 }
 
 export const getDigStorages = (token) => async (dispatch) => {
-  const permission = await useBluetoothPermissions()
-  dispatch(setBTPermission(permission))
+  //const permission = await useBluetoothPermissions()
+  //dispatch(setBTPermission(permission))
   try {
     const res = await DataService.getStoragesDig(token)
     if (res.success) {
@@ -88,19 +88,26 @@ export const getStep = (token) => async (dispatch) => {
 export const getNewVersion = () => async (dispatch) => {
   try {
     const res = await DataService.getNewVersion()
+    await SecureStore.setItemAsync('getStepOrders', res.api.getStepOrders)
+    await SecureStore.setItemAsync('getSteps', res.api.getSteps)
+    await SecureStore.setItemAsync('getStorages', res.api.getStorages)
+    await SecureStore.setItemAsync('getToken', res.api.getToken)
+    await SecureStore.setItemAsync('setNextOrderStep', res.api.setNextOrderStep)
+
+    console.log('thank', res.api.getStorages)
     return await res
   } catch (error) {
-    console.log("Get_STEP ERROR Thunk: " + JSON.stringify(error));
+    console.log("Get_VERSION ERROR Thunk: " + JSON.stringify(error));
   }
 }
 
 export const getTokenThunk = (log, pass) => async (dispatch) => {
   try {
     const res = await DataService.getToken(log, pass)
-   
+
     if (res.success) {
       dispatch(setToken(res.data))
-      if(Platform.OS === 'web') {
+      if (Platform.OS === 'web') {
         await localStorage.setItem('token', JSON.stringify(res.data))
       } else {
         await SecureStore.setItemAsync('token', JSON.stringify(res.data))
@@ -109,15 +116,15 @@ export const getTokenThunk = (log, pass) => async (dispatch) => {
       alert(res.errors[0])
     }
   } catch (error) {
-    console.log("Get_STEP ERROR Thunk: " + JSON.stringify(error));
+    console.log("Get_TOKEN ERROR Thunk: " + JSON.stringify(error));
   }
 }
 
 export const getNotifiThunk = (token) => async (dispatch) => {
-  
+
   try {
     const res = await DataService.getNotifi(token)
-   
+
     if (res.success) {
       const filterNote = res.data.filter(elem => elem.is_automatic == 0)
       dispatch(setNotifications(filterNote));

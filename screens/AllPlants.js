@@ -9,7 +9,7 @@ import RenderPlantsGroup from '../components/RenderPlantsGroup'
 import { getGroupOrdersThunk } from '../state/dataThunk'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { clearDataChange } from '../state/dataSlice'
-import PrinterModal from '../components/printer/PrinterModal'
+//import PrinterModal from '../components/printer/PrinterModal'
 
 
 
@@ -19,7 +19,7 @@ function AllPlantsScreen({ route, groupOrders, currentStep, totalPlantQty, stora
     const { token } = route.params
     const [refresh, setRefresh] = useState(false)
     const dispatch = useDispatch()
-    
+
     const renderItem = useCallback(({ item }) => {
         return <RenderPlantsGroup item={item} rightToChange={currentStep.rightToChange} />
     }, [currentStep])
@@ -64,25 +64,25 @@ function AllPlantsScreen({ route, groupOrders, currentStep, totalPlantQty, stora
                             allowFontScaling={true}
                             maxFontSizeMultiplier={1}
                         >В цьому полі немає рослин з таким сатусом</Text>
-                    </View> : 
-                    filterPlants === null ?
-                    <View style={styles.costLineWrapper}>
-                        <Text style={styles.noneData}>Не знайдено!</Text>
                     </View> :
-                    <FlatList
-                        data={filterPlants?.length > 0 ? filterPlants : groupOrders}
-                        renderItem={renderItem}
-                        keyExtractor={keyExtractor}
-                        refreshControl={<RefreshControl onRefresh={onRefresh} refreshing={refresh} />}
-                        refreshing={refresh}
-                        initialNumToRender='4'
-                        maxToRenderPerBatch='4'
-                        ListFooterComponentStyle={{marginBottom: 30}}
-                        ListFooterComponent={<View></View>}
-                    />
+                    filterPlants === null ?
+                        <View style={styles.costLineWrapper}>
+                            <Text style={styles.noneData}>Не знайдено!</Text>
+                        </View> :
+                        <FlatList
+                            data={filterPlants?.length > 0 ? filterPlants : groupOrders}
+                            renderItem={renderItem}
+                            keyExtractor={keyExtractor}
+                            refreshControl={<RefreshControl onRefresh={onRefresh} refreshing={refresh} />}
+                            refreshing={refresh}
+                            initialNumToRender='4'
+                            maxToRenderPerBatch='4'
+                            ListFooterComponentStyle={{ marginBottom: 30 }}
+                            ListFooterComponent={<View></View>}
+                        />
             }
             <NextStepButton path={route.name} />
-            <PrinterModal />
+            {/* <PrinterModal /> */}
             <ButtonsBar />
         </SafeAreaView>
     )

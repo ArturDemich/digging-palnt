@@ -1,4 +1,5 @@
 import axios from "axios";
+import * as SecureStore from 'expo-secure-store'
 import { Buffer } from 'buffer'
 
 const username = 'alex';
@@ -15,7 +16,7 @@ export class DataService {
 
     static getNewVersion() {
         let newVersion = axios.get(NEW_V_URL)
-            .then((response) => response.data)            
+            .then((response) => response.data)
             .catch((error) => {
                 alert(error)
                 console.log(error);
@@ -23,8 +24,9 @@ export class DataService {
         return newVersion
     }
 
-    static getStepOrders(stepId, storageId, token) {
-        let stepOrders = axios.post('http://194.42.196.141:41001/UTP/hs/api/getStepOrders', {
+    static async getStepOrders(stepId, storageId, token) {
+        let url = await SecureStore.getItemAsync('getStepOrders')
+        let stepOrders = await axios.post(url ? url : null, {
             token: token,
             stepId: stepId,
             storageId: storageId,
@@ -39,8 +41,9 @@ export class DataService {
         return stepOrders
     }
 
-    static getGroupOrders(stepId, storageId, token) {
-        let groupOrders = axios.post('http://194.42.196.141:41001/UTP/hs/api/getStepOrders', {
+    static async getGroupOrders(stepId, storageId, token) {
+        let url = await SecureStore.getItemAsync('getStepOrders')
+        let groupOrders = await axios.post(url ? url : null, {
             token: token,
             stepId: stepId,
             storageId: storageId,
@@ -56,8 +59,9 @@ export class DataService {
         return groupOrders
     }
 
-    static getStoragesDig(token) {
-        return axios.post('http://194.42.196.141:41001/UTP/hs/api/getStorages', { token: token }, {
+    static async getStoragesDig(token) {
+        let url = await SecureStore.getItemAsync('getStorages')
+        return await axios.post(url ? url : null, { token: token }, {
             headers: { 'Authorization': 'Basic ' + encodedToken }
         })
             .then((response) => response.data)
@@ -67,8 +71,9 @@ export class DataService {
             })
     }
 
-    static getSteps(token) {
-        return axios.post('http://194.42.196.141:41001/UTP/hs/api/getSteps', { token: token }, {
+    static async getSteps(token) {
+        let url = await SecureStore.getItemAsync('getSteps')
+        return await axios.post(url ? url : null, { token: token }, {
             headers: { 'Authorization': 'Basic ' + encodedToken }
         })
             .then((response) => response.data)
@@ -79,8 +84,10 @@ export class DataService {
     }
 
 
-    static getToken(log, pass) {
-        return axios.post('http://194.42.196.141:41001/UTP/hs/api/getToken', { login: log, password: pass }, {
+    static async getToken(log, pass) {
+        //let url = await SecureStore.getItemAsync('getToken')
+        console.log('getTok')
+        return await axios.post(url, { login: log, password: pass }, {
             headers: { 'Authorization': 'Basic ' + encodedToken }
         })
             .then((response) => response.data)
@@ -90,8 +97,9 @@ export class DataService {
             })
     }
 
-    static setNextStepGroup(token, dataOrders) {
-        let stepOrders = axios.post('http://194.42.196.141:41001/UTP/hs/api/setNextOrderStep', {
+    static async setNextStepGroup(token, dataOrders) {
+        let url = await SecureStore.getItemAsync('setNextOrderStep')
+        let stepOrders = await axios.post(url ? url : null, {
             token: token,
             stepdata: dataOrders
         }, {
@@ -105,7 +113,7 @@ export class DataService {
 
         return stepOrders
     }
-    
+
     static getNotifi(token) {
         return axios.post(NOTIFICATIONS_URL, { method: 'getNotifications', token: token },
             {
@@ -118,7 +126,7 @@ export class DataService {
             })
     }
 
-    
+
 
     static updateNotifi(token, messageid, mstatus) {
         return axios.post(NOTIFICATIONS_URL, {
@@ -149,23 +157,23 @@ export class DataService {
 
     static sendTokenDevice = (userTok, deviceTok, log) => {
         axios.post(SEVE_TOKEN_URL, {
-             userToken: userTok,
-             deviceToken: deviceTok,
-             loged: log
-         })
-         .then((response) => console.log(response.data))
-         .catch(error => {
-             if (error.response) {
-               console.error('Статус відповіді:', error.response.status);
-               console.error('Дані відповіді:', error.response.data);
-               console.error('Заголовки відповіді:', error.response.headers);
-             } else if (error.request) {
-               console.error('Запит відправлений, але не отримано відповіді:', error.request);
-             } else {
-               console.error('Сталася помилка при виконанні запиту:', error.message);
-             }
-           });              
-       }
+            userToken: userTok,
+            deviceToken: deviceTok,
+            loged: log
+        })
+            .then((response) => console.log(response.data))
+            .catch(error => {
+                if (error.response) {
+                    console.error('Статус відповіді:', error.response.status);
+                    console.error('Дані відповіді:', error.response.data);
+                    console.error('Заголовки відповіді:', error.response.headers);
+                } else if (error.request) {
+                    console.error('Запит відправлений, але не отримано відповіді:', error.request);
+                } else {
+                    console.error('Сталася помилка при виконанні запиту:', error.message);
+                }
+            });
+    }
 
 }
 

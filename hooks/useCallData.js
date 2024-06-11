@@ -5,15 +5,16 @@ import useDeviceToken from "./useDeviceToken"
 
 const useCallData = () => {
     const dispatch = useDispatch()
-    const {registerDeviceToken} = useDeviceToken()
+    const { registerDeviceToken } = useDeviceToken()
 
     const callData = async (token) => {
+        console.log('callDataHook')
         await dispatch(getDigStorages(token))
         await dispatch(getStep(token))
-        await registerDeviceToken(token, true)        
+        await registerDeviceToken(token, true)
     }
 
-    return {callData}
+    return { callData }
 }
 
 export default useCallData

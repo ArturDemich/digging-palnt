@@ -2,7 +2,7 @@
   "expo": {
     "name": "Digger",
     "slug": "digger",
-    "version": "1.5.2",
+    "version": "1.5.3",
     "orientation": "portrait",
     "icon": "./assets/logo.png",
     "splash": {
@@ -28,8 +28,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/logo.png",
-        "backgroundColor": "#ffffff",
-        "useNextGradle": true
+        "backgroundColor": "#ffffff"        
       },
       "package": "com.arctosdev.digger",
       "googleServicesFile": "./google-services.json"

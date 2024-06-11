@@ -20,8 +20,8 @@ function NewVersion() {
     }
 
     const get = async () => {
-        const data = await dispatch(getNewVersion()) 
-        if(String(ver) < String(data?.version) ) {
+        const data = await dispatch(getNewVersion())
+        if (String(ver) < String(data?.version)) {
             setShow(true)
         }
         setVersion(data)
@@ -30,8 +30,8 @@ function NewVersion() {
     useEffect(() => {
         get()
     }, [])
-    
-    return(
+
+    return (
         <View>
             <Modal
                 animationType="slide"
@@ -45,8 +45,8 @@ function NewVersion() {
                             style={styles.textStr}
                             allowFontScaling={true}
                             maxFontSizeMultiplier={1}
-                        >Все файно! </Text>                        
-                        <Text style={{fontSize: 17}}>Є нова версія додатка!!</Text>
+                        >Все файно! </Text>
+                        <Text style={{ fontSize: 17 }}>Є нова версія додатка!!</Text>
                         <Text style={styles.textStyle}>Оновити зараз?</Text>
                         <View style={styles.btnBlock}>
                             <TouchableOpacity
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
 
     btnBlock: {
         flexDirection: 'row',
-        justifyContent: 'space-between',       
+        justifyContent: 'space-between',
         flex: 1,
         width: "100%"
     },
@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
         borderRadius: 3,
         textAlign: "center",
         backgroundColor: "#45aa45",
-        width: 110,        
+        width: 110,
         alignSelf: 'flex-end',
         height: 35,
         elevation: 3,
@@ -144,11 +144,11 @@ const styles = StyleSheet.create({
         color: '#555555',
         marginBottom: 40,
         paddingLeft: 5,
-        paddingRight: 5,        
+        paddingRight: 5,
     },
     textStr: {
         fontWeight: 600,
-        fontSize: 21,        
+        fontSize: 21,
     },
     modalText: {
         textAlign: "center",

@@ -9,7 +9,7 @@ import RenderOrders from '../components/RenderOrders'
 import { getOrdersStep } from '../state/dataThunk'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { clearDataChange } from '../state/dataSlice'
-import PrinterModal from '../components/printer/PrinterModal'
+//import PrinterModal from '../components/printer/PrinterModal'
 
 function OrdersScreen({ orders, route, currentStep, totalPlantQty, totalOrderQty, storageId, filterOrders, filterPlantQty, filterOrderQty }) {
     const dispatch = useDispatch()
@@ -59,24 +59,24 @@ function OrdersScreen({ orders, route, currentStep, totalPlantQty, totalOrderQty
                 orders.length === 0 ?
                     <View style={styles.costLineWrapper}>
                         <Text style={styles.noneData}>Немає замовлень з таким сатусом</Text>
-                    </View> : 
-                    filterOrders === null ?
-                    <View style={styles.costLineWrapper}>
-                        <Text style={styles.noneData}>Не знайдено!</Text>
                     </View> :
-                    <FlatList
-                        data={filterOrders?.length > 0 ? filterOrders : orders}
-                        renderItem={renderItem}
-                        keyExtractor={keyExtractor}
-                        refreshControl={<RefreshControl onRefresh={onRefresh} refreshing={refresh} />}
-                        initialNumToRender='4'
-                        maxToRenderPerBatch='4'
-                        ListFooterComponentStyle={{marginBottom: 30}}
-                        ListFooterComponent={<View></View>}
-                    />
+                    filterOrders === null ?
+                        <View style={styles.costLineWrapper}>
+                            <Text style={styles.noneData}>Не знайдено!</Text>
+                        </View> :
+                        <FlatList
+                            data={filterOrders?.length > 0 ? filterOrders : orders}
+                            renderItem={renderItem}
+                            keyExtractor={keyExtractor}
+                            refreshControl={<RefreshControl onRefresh={onRefresh} refreshing={refresh} />}
+                            initialNumToRender='4'
+                            maxToRenderPerBatch='4'
+                            ListFooterComponentStyle={{ marginBottom: 30 }}
+                            ListFooterComponent={<View></View>}
+                        />
             }
             <NextStepButton path={route.name} />
-            <PrinterModal />
+            {/*  <PrinterModal /> */}
             <ButtonsBar />
 
         </SafeAreaView>
@@ -86,7 +86,7 @@ function OrdersScreen({ orders, route, currentStep, totalPlantQty, totalOrderQty
 const mapStateToProps = state => {
     return {
         orders: state.stepOrders,
-        filterOrders : state.filterOrders,
+        filterOrders: state.filterOrders,
         currentStep: state.currentStep,
         totalPlantQty: state.totalPlantQty,
         totalOrderQty: state.totalOrderQty,
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         marginBottom: 3,
-        marginTop: Platform.OS === 'ios' ? -45 : 0,        
+        marginTop: Platform.OS === 'ios' ? -45 : 0,
     },
     loader: {
         height: 'auto',

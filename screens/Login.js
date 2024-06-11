@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, StyleSheet, TouchableHighlight, SafeAreaView, TextInput, ActivityIndicator, Image, Platform } from 'react-native'
 import { connect, useDispatch } from 'react-redux'
-import { getTokenThunk } from '../state/dataThunk'
+import { getNewVersion, getTokenThunk } from '../state/dataThunk'
 import * as SecureStore from 'expo-secure-store'
 import logoIcon from '../assets/logoIcon.png'
 import CurrentVersion from '../components/CurrentVersion'
@@ -73,41 +73,43 @@ function LoginScreen() {
 
     useEffect(() => {
         getValueAuth()
-    }, [])  
-    
+        console.log('loginTest')
+        dispatch(getNewVersion())
+    }, [])
+
     const getToken = async () => {
-        setLoading(true)  
-        await saveAuth(password, login) 
+        setLoading(true)
+        await saveAuth(password, login)
         await dispatch(getTokenThunk(login, password))
         setLoading(false)
-    }   
+    }
 
-     const saveAuth = async (pass, login) => {
-        if(Platform.OS === 'web') {
+    const saveAuth = async (pass, login) => {
+        if (Platform.OS === 'web') {
             await localStorage.setItem('pass', pass)
             await localStorage.setItem('login', login)
         } else {
             await SecureStore.setItemAsync('pass', pass)
             await SecureStore.setItemAsync('login', login)
         }
-      }
+    }
 
-       const getValueAuth = async () => {
-        let pass 
+    const getValueAuth = async () => {
+        let pass
         let login
-        if(Platform.OS === 'web') {
+        if (Platform.OS === 'web') {
             pass = await localStorage.getItem('pass')
             login = await localStorage.getItem('login')
         } else {
-             pass = await SecureStore.getItemAsync('pass')
-             login = await SecureStore.getItemAsync('login')
+            pass = await SecureStore.getItemAsync('pass')
+            login = await SecureStore.getItemAsync('login')
         }
         if (pass && login) {
             onChangeLogin(login)
             onChangePass(pass)
-        } 
-      }
-       
+        }
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <Image source={logoIcon} style={styles.logo} />
@@ -142,7 +144,7 @@ function LoginScreen() {
                         > Увійти </Text>
                     </TouchableHighlight>
                 </View>}
-                <CurrentVersion />
+            <CurrentVersion />
         </SafeAreaView>
     );
 };
