@@ -10,18 +10,19 @@ const encodedToken = Buffer.from(tok).toString('base64')
 const FB_API_URL = 'https://us-central1-digger-3000.cloudfunctions.net/dataDiggerWeb'
 const NOTIFICATIONS_URL = 'https://landshaft.info/modules/viber/digger4.php'
 const SEVE_TOKEN_URL = 'https://us-central1-digger-3000.cloudfunctions.net/saveToken'
+const IP = '194.42.195.241'
 
 export class DataService {
 
     static getStepOrders(stepId, storageId, token) {
         let stepOrders = axios.post(FB_API_URL, {
-            URL: 'http://194.42.196.141:41001/UTP/hs/api/getStepOrders',
+            URL: `http://${IP}:41001/UTP/hs/api/getStepOrders`,
             encodedToken: encodedToken,
             data: {
                 token: token,
                 stepId: stepId,
                 storageId: storageId,
-            }            
+            }
         })
             .then((response) => response.data)
             .catch((error) => {
@@ -33,14 +34,14 @@ export class DataService {
 
     static getGroupOrders(stepId, storageId, token) {
         let groupOrders = axios.post(FB_API_URL, {
-            URL: 'http://194.42.196.141:41001/UTP/hs/api/getStepOrders',
+            URL: `http://${IP}:41001/UTP/hs/api/getStepOrders`,
             encodedToken: encodedToken,
-            data:{
+            data: {
                 token: token,
                 stepId: stepId,
                 storageId: storageId,
                 groupByOrder: false
-            }            
+            }
         })
             .then((response) => response.data)
             .catch((error) => {
@@ -53,7 +54,7 @@ export class DataService {
     static getStoragesDig(token) {
 
         return axios.post(FB_API_URL, {
-            URL: 'http://194.42.196.141:41001/UTP/hs/api/getStorages',
+            URL: `http://${IP}:41001/UTP/hs/api/getStorages`,
             encodedToken: encodedToken,
             data: {
                 token: token
@@ -69,12 +70,12 @@ export class DataService {
 
     static getSteps(token) {
 
-        return axios.post(FB_API_URL, { 
-            URL: 'http://194.42.196.141:41001/UTP/hs/api/getSteps',
+        return axios.post(FB_API_URL, {
+            URL: `http://${IP}:41001/UTP/hs/api/getSteps`,
             encodedToken: encodedToken,
             data: {
-            token: token 
-            }            
+                token: token
+            }
         })
             .then((response) => response.data)
             .catch((error) => {
@@ -86,8 +87,8 @@ export class DataService {
 
     static getToken(log, pass) {
 
-        return axios.post(FB_API_URL, { 
-            URL: 'http://194.42.196.141:41001/UTP/hs/api/getToken',
+        return axios.post(FB_API_URL, {
+            URL: `http://${IP}:41001/UTP/hs/api/getToken`,
             encodedToken: encodedToken,
             data: {
                 login: log,
@@ -99,18 +100,18 @@ export class DataService {
                 alert(error.response.data)
                 console.log(error);
             })
-    }    
+    }
 
 
     static setNextStepGroup(token, dataOrders) {
 
         let stepOrders = axios.post(FB_API_URL, {
-            URL: 'http://194.42.196.141:41001/UTP/hs/api/setNextOrderStep',
+            URL: `http://${IP}:41001/UTP/hs/api/setNextOrderStep`,
             encodedToken: encodedToken,
             data: {
                 token: token,
                 stepdata: dataOrders
-            }            
+            }
         })
             .then((response) => response.data)
             .catch((error) => {
@@ -121,7 +122,7 @@ export class DataService {
         return stepOrders
     }
 
-/////////////////////////
+    /////////////////////////
     static getNotifi(token) {
 
         return axios.post(NOTIFICATIONS_URL, { method: 'getNotifications', token: token },
@@ -165,23 +166,23 @@ export class DataService {
 
     static sendTokenDevice = (userTok, deviceTok, log) => {
         axios.post(SEVE_TOKEN_URL, {
-             userToken: userTok,
-             deviceToken: deviceTok,
-             loged: log
-         })
-         .then((response) => console.log(response.data))
-         .catch(error => {
-             if (error.response) {
-               console.error('Статус відповіді:', error.response.status);
-               console.error('Дані відповіді:', error.response.data);
-               console.error('Заголовки відповіді:', error.response.headers);
-             } else if (error.request) {
-               console.error('Запит відправлений, але не отримано відповіді:', error.request);
-             } else {
-               console.error('Сталася помилка при виконанні запиту:', error.message);
-             }
-           });              
-       }
+            userToken: userTok,
+            deviceToken: deviceTok,
+            loged: log
+        })
+            .then((response) => console.log(response.data))
+            .catch(error => {
+                if (error.response) {
+                    console.error('Статус відповіді:', error.response.status);
+                    console.error('Дані відповіді:', error.response.data);
+                    console.error('Заголовки відповіді:', error.response.headers);
+                } else if (error.request) {
+                    console.error('Запит відправлений, але не отримано відповіді:', error.request);
+                } else {
+                    console.error('Сталася помилка при виконанні запиту:', error.message);
+                }
+            });
+    }
 
 }
 
