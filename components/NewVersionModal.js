@@ -1,17 +1,15 @@
 import { useEffect, useState } from "react";
 import { Linking, Modal, Text, TouchableOpacity, View } from "react-native";
-import { getNewVersion } from "../state/dataThunk";
-import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import Constants from 'expo-constants';
 import { StyleSheet } from "react-native";
 
 
 
 
-function NewVersion() {
+function NewVersion({ }) {
     const [show, setShow] = useState(false)
-    const [version, setVersion] = useState()
-    const dispatch = useDispatch()
+    const version = useSelector((state) => state.newVersion)
     const ver = Constants.manifest.version
 
     const refreshApp = () => {
@@ -20,16 +18,14 @@ function NewVersion() {
     }
 
     const get = async () => {
-        const data = await dispatch(getNewVersion())
-        if (String(ver) < String(data?.version)) {
+        if (String(ver) < String(version)) {
             setShow(true)
         }
-        setVersion(data)
     }
 
     useEffect(() => {
         get()
-    }, [])
+    }, [version])
 
     return (
         <View>

@@ -9,7 +9,7 @@ import RenderOrders from '../components/RenderOrders'
 import { getOrdersStep } from '../state/dataThunk'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { clearDataChange } from '../state/dataSlice'
-//import PrinterModal from '../components/printer/PrinterModal'
+import PrinterModal from '../components/printer/PrinterModal'
 
 function OrdersScreen({ orders, route, currentStep, totalPlantQty, totalOrderQty, storageId, filterOrders, filterPlantQty, filterOrderQty }) {
     const dispatch = useDispatch()
@@ -76,7 +76,7 @@ function OrdersScreen({ orders, route, currentStep, totalPlantQty, totalOrderQty
                         />
             }
             <NextStepButton path={route.name} />
-            {/*  <PrinterModal /> */}
+            <PrinterModal />
             <ButtonsBar />
 
         </SafeAreaView>

@@ -7,7 +7,8 @@ import {
   setNotifications,
   setTotalQty,
   setCurrentColorStep,
-  setBTPermission
+  setBTPermission,
+  setNewVersion
 } from "./dataSlice"
 import { Platform } from "react-native"
 import { useBluetoothPermissions } from "../hooks/useBTPermission"
@@ -56,8 +57,8 @@ export const getGroupOrdersThunk = (stepId, storageId, token) => async (dispatch
 }
 
 export const getDigStorages = (token) => async (dispatch) => {
-  //const permission = await useBluetoothPermissions()
-  //dispatch(setBTPermission(permission))
+  const permission = await useBluetoothPermissions()
+  dispatch(setBTPermission(permission))
   try {
     const res = await DataService.getStoragesDig(token)
     if (res.success) {
@@ -93,8 +94,7 @@ export const getNewVersion = () => async (dispatch) => {
     await SecureStore.setItemAsync('getStorages', res.api.getStorages)
     await SecureStore.setItemAsync('getToken', res.api.getToken)
     await SecureStore.setItemAsync('setNextOrderStep', res.api.setNextOrderStep)
-
-    console.log('thank', res.api.getStorages)
+    await dispatch(setNewVersion(res.version))
     return await res
   } catch (error) {
     console.log("Get_VERSION ERROR Thunk: " + JSON.stringify(error));

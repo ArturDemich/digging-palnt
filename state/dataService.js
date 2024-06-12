@@ -26,7 +26,7 @@ export class DataService {
 
     static async getStepOrders(stepId, storageId, token) {
         let url = await SecureStore.getItemAsync('getStepOrders')
-        let stepOrders = await axios.post(url ? url : null, {
+        let stepOrders = await axios.post(url, {
             token: token,
             stepId: stepId,
             storageId: storageId,
@@ -43,7 +43,7 @@ export class DataService {
 
     static async getGroupOrders(stepId, storageId, token) {
         let url = await SecureStore.getItemAsync('getStepOrders')
-        let groupOrders = await axios.post(url ? url : null, {
+        let groupOrders = await axios.post(url, {
             token: token,
             stepId: stepId,
             storageId: storageId,
@@ -61,7 +61,7 @@ export class DataService {
 
     static async getStoragesDig(token) {
         let url = await SecureStore.getItemAsync('getStorages')
-        return await axios.post(url ? url : null, { token: token }, {
+        return await axios.post(url, { token: token }, {
             headers: { 'Authorization': 'Basic ' + encodedToken }
         })
             .then((response) => response.data)
@@ -73,7 +73,7 @@ export class DataService {
 
     static async getSteps(token) {
         let url = await SecureStore.getItemAsync('getSteps')
-        return await axios.post(url ? url : null, { token: token }, {
+        return await axios.post(url, { token: token }, {
             headers: { 'Authorization': 'Basic ' + encodedToken }
         })
             .then((response) => response.data)
@@ -85,7 +85,7 @@ export class DataService {
 
 
     static async getToken(log, pass) {
-        //let url = await SecureStore.getItemAsync('getToken')
+        let url = await SecureStore.getItemAsync('getToken')
         console.log('getTok')
         return await axios.post(url, { login: log, password: pass }, {
             headers: { 'Authorization': 'Basic ' + encodedToken }
@@ -99,7 +99,7 @@ export class DataService {
 
     static async setNextStepGroup(token, dataOrders) {
         let url = await SecureStore.getItemAsync('setNextOrderStep')
-        let stepOrders = await axios.post(url ? url : null, {
+        let stepOrders = await axios.post(url, {
             token: token,
             stepdata: dataOrders
         }, {

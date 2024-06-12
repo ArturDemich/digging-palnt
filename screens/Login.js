@@ -73,8 +73,6 @@ function LoginScreen() {
 
     useEffect(() => {
         getValueAuth()
-        console.log('loginTest')
-        dispatch(getNewVersion())
     }, [])
 
     const getToken = async () => {
@@ -95,6 +93,7 @@ function LoginScreen() {
     }
 
     const getValueAuth = async () => {
+        await dispatch(getNewVersion())
         let pass
         let login
         if (Platform.OS === 'web') {

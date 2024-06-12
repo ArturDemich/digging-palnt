@@ -9,7 +9,7 @@ import RenderPlantsGroup from '../components/RenderPlantsGroup'
 import { getGroupOrdersThunk } from '../state/dataThunk'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { clearDataChange } from '../state/dataSlice'
-//import PrinterModal from '../components/printer/PrinterModal'
+import PrinterModal from '../components/printer/PrinterModal'
 
 
 
@@ -82,7 +82,7 @@ function AllPlantsScreen({ route, groupOrders, currentStep, totalPlantQty, stora
                         />
             }
             <NextStepButton path={route.name} />
-            {/* <PrinterModal /> */}
+            <PrinterModal />
             <ButtonsBar />
         </SafeAreaView>
     )

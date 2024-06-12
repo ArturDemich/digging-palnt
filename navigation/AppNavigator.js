@@ -15,6 +15,7 @@ import { Platform, View } from 'react-native'
 import * as SecureStore from 'expo-secure-store'
 import useCallData from '../hooks/useCallData'
 import Search from '../components/Search'
+import NewVersion from '../components/NewVersionModal'
 
 
 
@@ -44,7 +45,6 @@ export default function Navigate() {
     }
 
     useEffect(() => {
-        console.log('navigator')
         token.length == 0 ? checkToken() : callData(token[0].token)
     }, [token])
 
@@ -114,6 +114,7 @@ export default function Navigate() {
                         </Stack.Group>
                     )}
                 </Stack.Navigator>
+                <NewVersion />
             </View>
         </View>
 

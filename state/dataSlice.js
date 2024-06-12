@@ -8,7 +8,7 @@ const initialState = {
     filterPlants: [],
     steps: [],
     token: [],
-    currentStep: [],    
+    currentStep: [],
     currentStorageId: {},
     currentColorStep: '',
     searchText: '',
@@ -18,7 +18,8 @@ const initialState = {
     totalOrderQty: 0,
     filterPlantQty: null,
     filterOrderQty: null,
-    btPermission: []
+    btPermission: [],
+    newVersion: ''
 }
 
 export const dataSlice = createSlice({
@@ -69,6 +70,9 @@ export const dataSlice = createSlice({
         setFilterQty(state, action) {
             state.filterOrderQty = action.payload.orders
             state.filterPlantQty = action.payload.plants
+        },
+        setNewVersion(state, action) {
+            state.newVersion = action.payload
         },
         setCurrentColorStep(state, action) {
             const colorStepBtn = {
@@ -126,7 +130,7 @@ export const dataSlice = createSlice({
                 state.dataChange = orders
             } else {
                 state.dataChange = [...orders, action.payload]
-            }            
+            }
         },
 
         clearDataChangeItem(state, action) {
@@ -145,6 +149,7 @@ export const dataSlice = createSlice({
         clearDataChange(state) {
             state.dataChange = []
         },
+
         cleanState(state) {
             state.token = []
             state.steps = []
@@ -161,8 +166,9 @@ export const dataSlice = createSlice({
             state.totalOrderQty = 0
             state.filterPlants = []
             state.filterPlantQty = null,
-            state.filterOrderQty = null,
-            state.btPermission = []
+                state.filterOrderQty = null,
+                state.btPermission = [],
+                state.newVersion = ''
         },
     },
 })
@@ -173,7 +179,7 @@ export const {
     setStorageId, setDataChange, clearDataChange,
     clearDataChangeItem, setNotifications, setTotalQty,
     setCurrentColorStep, setFilterOrders, setFilterPlants,
-    setFilterQty, setSearchText, setBTPermission
+    setFilterQty, setSearchText, setBTPermission, setNewVersion
 } = dataSlice.actions
 
 export default dataSlice.reducer

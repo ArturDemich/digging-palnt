@@ -2,9 +2,7 @@ import { View, Text, StyleSheet, TouchableOpacity, FlatList, Platform } from 're
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { connect, useDispatch } from 'react-redux'
 import { setStorageId } from '../state/dataSlice'
-import { DataService } from '../state/dataService'
 import CurrentVersion from '../components/CurrentVersion'
-import NewVersion from '../components/NewVersionModal'
 
 
 const styles = StyleSheet.create({
@@ -52,8 +50,6 @@ const styles = StyleSheet.create({
 
 function MainScreen({ navigation, digStorages }) {
     const dispatch = useDispatch()
-
-    DataService.getNewVersion()
     function renderFildsButton({ item }) {
         return (
             <TouchableOpacity
@@ -73,7 +69,6 @@ function MainScreen({ navigation, digStorages }) {
         )
     }
 
-
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.containerView}>
@@ -86,17 +81,16 @@ function MainScreen({ navigation, digStorages }) {
                     data={digStorages}
                     renderItem={renderFildsButton}
                     keyExtractor={item => item.id.toString()}
-                    style={{padding: 10}}
+                    style={{ padding: 10 }}
                 />
             </View>
-            <NewVersion />
             <CurrentVersion />
         </SafeAreaView>
     )
 }
 
 const mapStateToProps = (state) => ({
-    digStorages: state.digStorages,
+    digStorages: state.digStorages
 })
 
 export default connect(mapStateToProps)(MainScreen)
