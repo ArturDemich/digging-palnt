@@ -22,23 +22,23 @@ function FildScreen({ currentColor, token, digStorages }) {
             initialRouteName="Замовлення"
             screenOptions={{
                 tabBarActiveTintColor: '#ffff',
-                tabBarLabelStyle: { fontSize: 12, fontWeight: '700' },
-                tabBarStyle: { backgroundColor: currentColor, height: 40, justifyContent: 'center' },
-                tabBarIndicatorStyle: { backgroundColor: '#ffff', height: 4, },
+                tabBarLabelStyle: { fontSize: 14, fontWeight: '700' },
+                tabBarStyle: { backgroundColor: currentColor, height: 45, justifyContent: 'center' },
+                tabBarIndicatorStyle: { backgroundColor: '#f2f2f2', height: 5, },
                 lazy: true,
+                unmountOnBlur: true,
+                detachInactiveScreens: true,
             }}
         >
             <Tab.Screen
                 name="Замовлення"
                 component={Order}
-                options={{ tabBarLabel: 'Замовлення' }}
-                initialParams={{ token: token }}
+                options={{ tabBarLabel: 'Замовлення' }}                
             />
             <Tab.Screen
                 name="Рослини Замовлення"
                 component={AllPlants}
                 options={{ tabBarLabel: 'Всі Рослини' }}
-                initialParams={{ token: token }}
             />
 
         </Tab.Navigator>

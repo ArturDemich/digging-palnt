@@ -1,15 +1,15 @@
 import Checkbox from 'expo-checkbox'
-import React, { useEffect, useState } from 'react'
-import { Text, TextInput, StyleSheet, View } from 'react-native'
+import React, { useEffect, useRef, useState } from 'react'
+import { Text, TextInput, StyleSheet, View, TouchableOpacity } from 'react-native'
 import { useDispatch, connect } from 'react-redux'
-import { clearDataChangeItem, setDataChange } from '../state/dataSlice'
-import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { clearDataChangeItem, setDataChange, setSearchText } from '../state/dataSlice'
+import { MaterialCommunityIcons, Entypo } from '@expo/vector-icons'
 
 
 
-function RenderPlants({ currentStorageId, orderId, selectedAllOrder, prodactElem, currentStep, orders, shipmentMethod, customerName, navigation }) {
+const RenderPlants = ({ orderId, selectedAllOrder, prodactElem, currentStep, orders, shipmentMethod, customerName, currentColor, scrollToTop}) => {
     const dispatch = useDispatch()
-    const { characteristic, lastChange, product, qty, unit } = prodactElem
+    const { characteristic, lastChange, product, qty, unit, storage } = prodactElem
     const [plantCheckBox, setPlantCheckBox] = useState(selectedAllOrder)
     const [qtyState, setQty] = useState(qty)
 
@@ -24,10 +24,10 @@ function RenderPlants({ currentStorageId, orderId, selectedAllOrder, prodactElem
             alert('Введіть кількіть викопаних рослин - цифрами')
         }
     }
-
+    
     const setModalState = () => {
         const orders = {
-            storageId: currentStorageId.id,
+            storageId: storage.id,
             currentstepId: currentStep.id,
             orderId: orderId,
             productid: product.id,
@@ -39,7 +39,7 @@ function RenderPlants({ currentStorageId, orderId, selectedAllOrder, prodactElem
             characteristicName: characteristic.name,
             shipmentMethod: shipmentMethod,
             customerName: customerName,
-            currentStorage: currentStorageId.name
+            currentStorage: storage.name
         }
         dispatch(setDataChange(orders))
     }
@@ -53,19 +53,34 @@ function RenderPlants({ currentStorageId, orderId, selectedAllOrder, prodactElem
         }
     }
 
-    useEffect(() => {
-        if (selectedAllOrder === true && plantCheckBox === true) {
-            setModalState()
-        } else if (plantCheckBox === false) {
+    const searchPoint = async (value) => {
+        await dispatch(setSearchText(value))
+        await scrollToTop()
+    }       
+
+    const clearDataByCheckBox = () => {
+        if (plantCheckBox === false ) {
+            console.log("RenderPlant_clearDataByCheckBox")
             dispatch(clearDataChangeItem({
                 orderId: orderId,
                 productid: product.id,
                 characteristicid: characteristic.id,
+                storageId: storage.id,
             }))
+        }
+    }
+
+    useEffect(() => {        
+        if (selectedAllOrder === true && plantCheckBox === true) {
+            setModalState()
         } else if (plantCheckBox === true) {
             setModalState()
+        } else {
+            clearDataByCheckBox()
         }
     }, [selectedAllOrder, plantCheckBox, orders])
+    
+    console.log("RenderPlants ", customerName)
     
     return (
         <View style={styles.infoBlock}>
@@ -87,14 +102,26 @@ function RenderPlants({ currentStorageId, orderId, selectedAllOrder, prodactElem
                     >змінено: {lastChange}</Text>
                 </View>
                 <View style={styles.info}>
-                    <MaterialCommunityIcons name="pine-tree" size={20} color="black">
-                        <MaterialCommunityIcons name="shovel" size={15} color="black" />
-                        <Text
-                            style={styles.quantity}
-                            allowFontScaling={true}
-                            maxFontSizeMultiplier={1}
-                        > {qty} шт</Text>
-                    </MaterialCommunityIcons>
+                    <View>
+                        <MaterialCommunityIcons name="pine-tree" size={20} color="black">
+                            <MaterialCommunityIcons name="shovel" size={15} color="black" />
+                            <Text
+                                style={styles.quantity}
+                                allowFontScaling={true}
+                                maxFontSizeMultiplier={1}
+                            > {qty} шт</Text>
+                        </MaterialCommunityIcons>
+                        <TouchableOpacity style={styles.toucheble(currentColor)} onPress={() => searchPoint(storage?.id)}>
+                            <Entypo name="location" size={20} color="black">
+                                <Text 
+                                    style={styles.location}
+                                    allowFontScaling={true}
+                                    maxFontSizeMultiplier={1}
+                                    > {storage?.name}</Text>
+                            </Entypo>
+                        </TouchableOpacity>
+                    </View>
+                    
                     {currentStep.rightToChange ?
                         <View style={styles.changeinfo}>
                             <View style={styles.changeinfoblock}>
@@ -136,7 +163,7 @@ function RenderPlants({ currentStorageId, orderId, selectedAllOrder, prodactElem
 const mapStateToProps = state => ({
     currentStep: state.currentStep,
     orders: state.stepOrders,
-    currentStorageId: state.currentStorageId,
+    currentColor: state.currentColorStep,
 })
 export default connect(mapStateToProps)(RenderPlants)
 
@@ -148,6 +175,8 @@ const styles = StyleSheet.create({
         width: '100%',
         borderTopWidth: 2,
         borderTopColor: '#b0acb0',
+        paddingLeft: 5,
+        paddingRight: 5,
     },
     textStr: {
         fontWeight: 600,
@@ -178,6 +207,7 @@ const styles = StyleSheet.create({
     info: {
         flexDirection: 'row',
         justifyContent: 'space-between',
+        marginBottom: 5
     },
     quantity: {
         height: 'auto',
@@ -187,9 +217,19 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: 600
     },
+    location: {
+        height: 'auto',
+        textAlignVertical: 'center',
+        lineHeight: 25,
+        alignSelf: 'center',
+        paddingBottom: 5,
+        fontSize: 14,
+        fontWeight: 500,        
+    },
     changeinfo: {
         flexDirection: 'row',
         justifyContent: 'space-between',
+        alignItems: 'center'
     },
     changeinfoblock: {
         flexDirection: 'row'
@@ -214,4 +254,13 @@ const styles = StyleSheet.create({
         fontWeight: 900,
         color: '#c5c5c5'
     },
+    toucheble: color => ({
+        elevation: 2,
+        shadowColor: color,
+        paddingTop: 6,
+        paddingBottom: 5,
+        paddingLeft: 7,
+        paddingRight: 7,
+        borderRadius: 3,        
+    }),
 })

@@ -38,12 +38,13 @@ export const dataSlice = createSlice({
         },
         setStepOrders(state, action) {
             state.stepOrders = action.payload.data
+            console.log('Slise setStepOrders')
         },
         setGroupOrders(state, action) {
             state.groupOrders = action.payload.data
         },
         setFilterOrders(state, action) {
-            state.filterOrders = action.payload
+            state.filterOrders = action.payload            
         },
         setFilterPlants(state, action) {
             state.filterPlants = action.payload
@@ -56,6 +57,7 @@ export const dataSlice = createSlice({
         },
         setStorageId(state, action) {
             state.currentStorageId = action.payload
+            console.log('Slice StorID', state.currentStorageId)
         },
         setSearchText(state, action) {
             state.searchText = action.payload
@@ -122,7 +124,8 @@ export const dataSlice = createSlice({
             const eix = orders.findIndex((value) => {
                 return (value.orderId === action.payload.orderId &&
                     value.productid === action.payload.productid &&
-                    value.characteristicid === action.payload.characteristicid)
+                    value.characteristicid === action.payload.characteristicid &&
+                    value.storageId === action.payload.storageId)
             })
 
             if (eix > -1) {
@@ -131,23 +134,33 @@ export const dataSlice = createSlice({
             } else {
                 state.dataChange = [...orders, action.payload]
             }
+            console.log('setDataChange', state.dataChange.length)
         },
 
-        clearDataChangeItem(state, action) {
-            const orders = state.dataChange
-            const eix = orders.findIndex((value) => {
-                return value.orderId === action.payload.orderId &&
-                    value.productid === action.payload.productid &&
-                    value.characteristicid === action.payload.characteristicid
-            })
-            if (eix > -1) {
-                const removed = orders.splice(eix, 1)
-                state.dataChange = orders
+        clearDataChangeItem(state, action) {            
+            if (state.dataChange.length > 0) {
+                const orders = state.dataChange
+                const eix = orders.findIndex((value) => {
+                    return value.orderId === action.payload.orderId &&
+                        value.productid === action.payload.productid &&
+                        value.characteristicid === action.payload.characteristicid &&
+                        value.storageId === action.payload.storageId
+                })
+                if (eix > -1) {
+                    const removed = orders.splice(eix, 1)
+                    state.dataChange = orders
+                }
+                console.log('clearDataChangeItem', state.dataChange.length)
             }
+            
         },
 
         clearDataChange(state) {
-            state.dataChange = []
+            state.dataChange.length === 0 ? null : state.dataChange = []
+        },
+
+        clearStepOrders(state) {
+            state.stepOrders.length === 0 ? null : state.stepOrders = []
         },
 
         cleanState(state) {
@@ -179,7 +192,7 @@ export const {
     setStorageId, setDataChange, clearDataChange,
     clearDataChangeItem, setNotifications, setTotalQty,
     setCurrentColorStep, setFilterOrders, setFilterPlants,
-    setFilterQty, setSearchText, setBTPermission, setNewVersion
+    setFilterQty, setSearchText, setBTPermission, setNewVersion, clearStepOrders
 } = dataSlice.actions
 
 export default dataSlice.reducer

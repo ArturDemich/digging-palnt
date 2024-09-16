@@ -1,14 +1,11 @@
 import Checkbox from "expo-checkbox"
-import { memo, useEffect, useState } from "react"
-import { StyleSheet, Text, TouchableHighlight, View } from "react-native"
+import { memo, useState } from "react"
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native"
 import { connect, useDispatch } from "react-redux"
 import shortid from "shortid"
-import { DataService } from "../state/dataService"
 import RenderPlants from "./RenderPlants"
-import { MaterialCommunityIcons } from '@expo/vector-icons'
-import { FontAwesome5 } from '@expo/vector-icons'
+import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons'
 import { allStyles } from "../styles"
-import { TouchableOpacity } from "react-native"
 import { setSearchText } from "../state/dataSlice"
 
 
@@ -34,16 +31,15 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         width: '100%',
-        paddingLeft: 5,
-        paddingRight: 5,
-        paddingBottom: 10,
+        paddingBottom: 5,
     },
     orderInfo: {
         height: 'auto',
-        borderBottomWidth: 2,
         paddingBottom: 10,
-        borderBottomColor: '#858585',
         backgroundColor: '#eef9ee',
+        paddingLeft: 5,
+        paddingRight: 5,
+        borderRadius: 5,
     },
     infoContainer: {
         flexDirection: 'row',
@@ -74,7 +70,7 @@ const styles = StyleSheet.create({
         height: 'auto',
         fontSize: 12,
         fontWeight: 600,
-        elevation: 5,
+        lineHeight: 25,
         textShadowColor: 'rgba(0, 0, 0, 0.75)', // Колір тіні (чорний)
         textShadowOffset: { width: 0, height: 0 }, // Відступ по горизонталі і вертикалі
         textShadowRadius: 2, // Радіус тіні
@@ -93,29 +89,53 @@ const styles = StyleSheet.create({
         height: 27,
         width: 27,
     },
-    toucheble: {
-    elevation: 1,
-    borderWidth: 0.1,
-    borderColor: '#0531000a'
-    }
-
+    toucheble: color => ({
+        elevation: 2,       
+        shadowColor: color,
+        paddingTop: 3,
+        paddingBottom: 3,
+        paddingLeft: 7,
+        paddingRight: 5,
+        borderRadius: 3,        
+    }),
+    shipment: {
+        flexDirection: 'row',
+        gap: 5,   
+    },
 })
 
+const renderItem = (orderId, elem, selectedAllOrder, shipmentMethod, customerName, scrollToTop) => {
+    return <RenderPlants
+    key={shortid.generate()}
+    orderId={orderId}
+    prodactElem={elem}
+    selectedAllOrder={selectedAllOrder}
+    shipmentMethod={shipmentMethod}
+    customerName={customerName}
+    scrollToTop={scrollToTop}
+/>
+}
 
-function RenderOrders({ orders, rightToChange }) {
+
+const RenderOrders = ({ orders, rightToChange, currentColor, scrollToTop }) => {
     const dispatch = useDispatch()
     const [selectedAllOrder, setSelectedAllOrder] = useState(false)
-    const { customerName, orderNo, shipmentMethod, shipmentDate, products, orderId, comment } = orders
+    const { customerName, orderNo, shipmentMethod, shipmentDate, products, orderId, comment } = orders   
 
     let qty = 0
     products.forEach(el => qty += el.qty)
     
+    const searchPoint = async (value) => {
+        await dispatch(setSearchText(value))
+        await scrollToTop()
+    }    
+    console.log("RenderOrder",)    
     return (
         <View style={styles.rowFront} >
             <View style={styles.costLineWrapper}>
                 <View style={styles.orderInfo}>
                     <View style={styles.infoContainer}>
-                        <TouchableOpacity style={{flex: 1}} onPress={() => dispatch(setSearchText(customerName))}>
+                        <TouchableOpacity style={{flex: 1}} onPress={() => searchPoint(customerName)}>
                             <Text style={styles.orderClient}
                                 allowFontScaling={true}
                                 maxFontSizeMultiplier={1}
@@ -130,7 +150,8 @@ function RenderOrders({ orders, rightToChange }) {
                             /> : null}
                     </View>
                     <View style={styles.viewGroup}>
-                        <TouchableOpacity style={styles.toucheble} onPress={() => dispatch(setSearchText(shipmentMethod))}>
+                        <View style={styles.shipment}>
+                        <TouchableOpacity style={styles.toucheble(currentColor)} onPress={() => searchPoint(shipmentMethod)}>
                             <FontAwesome5 name="truck-loading" size={14} color="black" >                                
                                     <Text
                                         style={[styles.orderShipment, shipmentMethod.toLowerCase().includes('пошта') && allStyles.NPshipment ]}
@@ -139,6 +160,16 @@ function RenderOrders({ orders, rightToChange }) {
                                     ><Text style={styles.textStr}> {shipmentMethod}</Text> </Text>  
                             </FontAwesome5>
                         </TouchableOpacity>
+                        <TouchableOpacity style={styles.toucheble(currentColor)} onPress={() => searchPoint(shipmentDate)}>
+                            <MaterialCommunityIcons name="truck-delivery-outline" size={22} color="black" >
+                                <Text
+                                    style={styles.orderShipment}
+                                    allowFontScaling={true}
+                                    maxFontSizeMultiplier={1}
+                                > {shipmentDate} </Text>
+                            </MaterialCommunityIcons>
+                        </TouchableOpacity>
+                        </View>
                         <MaterialCommunityIcons name="pine-tree" size={20} color="black">
                             <MaterialCommunityIcons name="pine-tree" size={14} color="black" />
                             <Text
@@ -148,16 +179,7 @@ function RenderOrders({ orders, rightToChange }) {
                             > {qty} шт</Text>
                         </MaterialCommunityIcons>
                     </View>
-                    <View style={styles.viewGroup}>
-                        <TouchableOpacity onPress={() => dispatch(setSearchText(shipmentDate))}>
-                            <MaterialCommunityIcons name="truck-delivery-outline" size={22} color="black" >
-                                <Text
-                                    style={styles.orderShipment}
-                                    allowFontScaling={true}
-                                    maxFontSizeMultiplier={1}
-                                > {shipmentDate}</Text>
-                            </MaterialCommunityIcons>
-                        </TouchableOpacity>
+                    <View style={{alignItems: 'flex-end'}}>                        
                         <MaterialCommunityIcons name="clipboard-list-outline" size={19} color="black">
                             <Text
                                 style={styles.orderNum}
@@ -175,15 +197,8 @@ function RenderOrders({ orders, rightToChange }) {
                     </MaterialCommunityIcons>
                 </View>
                 <View >
-                    {products.map(elem =>
-                        <RenderPlants
-                            key={shortid.generate()}
-                            orderId={orderId}
-                            prodactElem={elem}
-                            selectedAllOrder={selectedAllOrder}
-                            shipmentMethod={shipmentMethod}
-                            customerName={customerName}
-                        />
+                    {products.map(elem => renderItem(orderId, elem, selectedAllOrder, shipmentMethod, customerName, scrollToTop)
+                        
                     )}
                 </View>
             </View>
@@ -191,8 +206,8 @@ function RenderOrders({ orders, rightToChange }) {
     )
 }
 
-const mapStateToProps = state => ({
-    token: state.token,
+const mapStateToProps = state => ({   
+    currentColor: state.currentColorStep,
 })
 
 export default connect(mapStateToProps)(memo(RenderOrders))

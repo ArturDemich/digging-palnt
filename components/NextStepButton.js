@@ -1,8 +1,9 @@
-import { View, Text, StyleSheet, TouchableHighlight } from 'react-native'
+import { View, Text, StyleSheet, TouchableHighlight, ActivityIndicator } from 'react-native'
 import { connect, useDispatch } from 'react-redux'
 import { getGroupOrdersThunk, getOrdersStep, setNextStepGroupThunk } from '../state/dataThunk'
 import { MaterialIcons } from '@expo/vector-icons'
 import { clearDataChange } from '../state/dataSlice'
+import { useState } from 'react'
 
 
 const styles = StyleSheet.create({
@@ -33,6 +34,10 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.9,
         shadowRadius: 3, 
     }),
+    loding: {
+        width: 70,
+        alignContent: 'center',
+    },
     none: {
         display: 'none'
     }
@@ -68,7 +73,10 @@ const colorStepBtn = {
 
 function NextStepButton({ path, currentStorageId, token, currentStep, dataChange }) {
     const dispatch = useDispatch()
+    const [loding, setLoding] = useState(false)
+
     const sendData = async (pathValue) => {
+        setLoding(true)
         await dispatch(setNextStepGroupThunk(token[0].token, dataChange))
         await dispatch(clearDataChange())
         if (pathValue === "Замовлення") {
@@ -114,21 +122,27 @@ function NextStepButton({ path, currentStorageId, token, currentStep, dataChange
     
     return (
         <View>
-            {dataChange.length > 0 ? <View style={styles.containerNBTN} >
-
-                <TouchableHighlight
-                    style={[styles.buttonStep(setNextStepColor(currentStep.id)), dataChange.length === 0 && styles.none]}
-                    onPress={() => sendData(path)}
-                >
-                    <MaterialIcons name="done-outline" size={20} color="snow" style={{ flex: 1 }} >
-                        <Text
-                            style={styles.textBtn}
-                            allowFontScaling={true}
-                            maxFontSizeMultiplier={1}
-                        > {setNextStepName(currentStep.id)} </Text>
-                    </MaterialIcons>
-                </TouchableHighlight>
-            </View> : null}
+            {dataChange.length > 0 ? 
+                <View style={styles.containerNBTN} >
+                    
+                    <TouchableHighlight
+                        style={[styles.buttonStep(setNextStepColor(currentStep.id)), dataChange.length === 0 && styles.none]}
+                        onPress={() => sendData(path).then(() => setLoding(false))}
+                    >
+                        {loding ? 
+                            <View style={styles.loding}>
+                                <ActivityIndicator size="large" color="snow" />
+                            </View> :
+                            <MaterialIcons name="done-outline" size={20} color="snow" style={{ flex: 1 }} >
+                                <Text
+                                    style={styles.textBtn}
+                                    allowFontScaling={true}
+                                    maxFontSizeMultiplier={1}
+                                > {setNextStepName(currentStep.id)} </Text>
+                            </MaterialIcons>}
+                    </TouchableHighlight>
+                </View> : 
+            null}
         </View>
     )
 }

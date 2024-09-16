@@ -11,7 +11,7 @@ import {
   setNewVersion
 } from "./dataSlice"
 import { Platform } from "react-native"
-import { useBluetoothPermissions } from "../hooks/useBTPermission"
+//import { useBluetoothPermissions } from "../hooks/useBTPermission"
 
 
 export const getOrdersStep = (stepId, storageId, token) => async (dispatch) => {
@@ -57,8 +57,8 @@ export const getGroupOrdersThunk = (stepId, storageId, token) => async (dispatch
 }
 
 export const getDigStorages = (token) => async (dispatch) => {
-  const permission = await useBluetoothPermissions()
-  dispatch(setBTPermission(permission))
+ /*  const permission = await useBluetoothPermissions()
+  dispatch(setBTPermission(permission)) */
   try {
     const res = await DataService.getStoragesDig(token)
     if (res.success) {

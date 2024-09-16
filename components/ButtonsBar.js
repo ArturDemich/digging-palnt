@@ -71,10 +71,11 @@ const colorStepBtn = {
     }
 }
 
-function ButtonsBar({ steps, currentStep }) {
+function ButtonsBar({ steps, currentStep}) {
     const dispatch = useDispatch()
 
     const setDataState = async (newStep) => {
+        //await setLoading()
         await dispatch(clearDataChange())
         await dispatch(setCurrentStep(newStep))
         await dispatch(setCurrentColorStep(newStep.theme))

@@ -139,19 +139,19 @@ function Search({orders, groupOrders, navigation, searchText}) {
     return (
         <View style={styles.container}>
             {inputShow && (
-            <View style={{flexDirection: 'row'}}>
-            <TextInput
-                style={styles.input}
-                onChangeText={changeText}
-                value={searchText} 
-                ref={inputRef}
-                inputMode="search"
-            />
+            <View style={{flexDirection: 'row',}}>
+                <TextInput
+                    style={styles.input}
+                    onChangeText={changeText}
+                    value={searchText} 
+                    ref={inputRef}
+                    inputMode="search"
+                />
             
                 <TouchableOpacity onPress={() => clearInput()} style={styles.close}>
-                    <Text style={{fontWeight: 700}}> X </Text>
+                    <Text style={{fontWeight: 600, fontSize: 22}}> X </Text>
                 </TouchableOpacity>
-                </View>
+            </View>
             )}
             <TouchableOpacity onPress={() => setInputShow(true)} style={{height: '100%', justifyContent: 'center'}} >
                 <MaterialIcons name="search" size={24} color="black" style={styles.icon} />
@@ -176,21 +176,22 @@ const styles = StyleSheet.create({
     },
     input: {
         borderWidth: 1,
-        display: 'flex',
+        display: 'flex',             
+        position: 'absolute',
+        right: '-225%',
+        bottom: 7,
+        zIndex: 1,
         borderRadius: 5,
         borderColor: '#7b7b7b',
-        minWidth: 160,
-        maxWidth: 200,
-        height: 32,
+        width: 340,
+        height: 45,
         shadowColor: 'black',
         shadowOffset: { width: 0, height: 0 },
         shadowOpacity: 0.9,
         shadowRadius: 100,
         elevation: 90,
-        alignSelf: 'flex-end',
         backgroundColor: 'snow',
-        left: 28,
-        paddingLeft: 5,        
+        paddingLeft: 7,        
     },
     icon:{
         shadowColor: 'black',
@@ -203,11 +204,12 @@ const styles = StyleSheet.create({
 
     },
     close: {
+        backgroundColor: '#f2f2f2',
         alignItems: 'center',
-        right: 3,   
-        top: 11 ,
+        right: -107,
+        zIndex: 2,
         height: 60,
-        width: 30,
+        width: 33,
         justifyContent: 'center',
     }
 })
