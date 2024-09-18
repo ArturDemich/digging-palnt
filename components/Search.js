@@ -2,7 +2,7 @@ import { connect, useDispatch } from "react-redux"
 import { MaterialIcons } from '@expo/vector-icons';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useEffect, useState, useRef } from "react";
-import { setFilterOrders, setFilterPlants, setFilterQty, setSearchText } from "../state/dataSlice";
+import { setFilterOrders, setFilterPlants, setFilterQty, setLodingOrders, setLodingPlants, setSearchText } from "../state/dataSlice";
 
 
 
@@ -16,7 +16,13 @@ function Search({orders, groupOrders, navigation, searchText}) {
         dispatch(setSearchText(val))
     }
     
+    const turnLoding = (turn) => {        
+        searchText === '' || searchText === ' ' ? null : (routeIdx === 1 ? dispatch(setLodingPlants(turn)) : dispatch(setLodingOrders(turn)))      
+    }
+
      const clearInput = async () => {
+        console.log('Searche clearInput',  Boolean(searchText))
+        await turnLoding(true)
         await dispatch(setSearchText(''))
         await dispatch(setFilterOrders([]))
         await dispatch(setFilterPlants([]))
@@ -25,26 +31,27 @@ function Search({orders, groupOrders, navigation, searchText}) {
             plants: null
           }))
         await setInputShow(false)
+        await new Promise((resolve) => setTimeout(resolve, 300))
+        await turnLoding(false)
     }
-    
-    useEffect(() => {
-        inputShow ? inputRef.current.focus() : null
-    }, [inputShow])
-    
-   
-    useEffect(() => {   
+     
+       
+    useEffect(() => {          
         searchText ?  setFilter() : null  
         inputShow  ? searchOrders(routeIdx === 1 ? groupOrders : orders) : null
     }, [searchText])
 
      useEffect(() => {        
         inputShow ? clearInput() : null
-        return () =>  clearInput() 
     }, [orders, groupOrders]) 
 
-    const setFilter = () => {
+    const setFilter = async () => {
+        console.log('Searche setFilter',  Boolean(searchText))
+       await turnLoding(true)
         searchOrders(routeIdx === 1 ? groupOrders : orders)
         setInputShow(true)
+        await new Promise((resolve) => setTimeout(resolve, 300))
+       await turnLoding(false) 
     }
 
     const searchOrders = (dataOrder) => { 
@@ -132,8 +139,15 @@ function Search({orders, groupOrders, navigation, searchText}) {
             } else {
                 dispatch(setFilterOrders(filterOrders))
             }
-        }        
+        }               
     }
+
+    const handleIconSearche = () => {
+        setInputShow(true)
+        setTimeout(() => {
+          inputRef.current?.focus();
+        }, 100);
+      };
 
     
     return (
@@ -153,7 +167,7 @@ function Search({orders, groupOrders, navigation, searchText}) {
                 </TouchableOpacity>
             </View>
             )}
-            <TouchableOpacity onPress={() => setInputShow(true)} style={{height: '100%', justifyContent: 'center'}} >
+            <TouchableOpacity onPress={() => handleIconSearche()} style={{height: '100%', justifyContent: 'center'}} >
                 <MaterialIcons name="search" size={24} color="black" style={styles.icon} />
             </TouchableOpacity>
         </View>
@@ -173,6 +187,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         height: 56, 
+        
     },
     input: {
         borderWidth: 1,

@@ -5,7 +5,7 @@ import shortid from "shortid"
 import RenderOrderByGroup from "./RenderOrderByGroup"
 import { MaterialCommunityIcons, Entypo } from '@expo/vector-icons'
 import { setSearchText } from "../state/dataSlice"
-import { useDispatch, useSelector } from "react-redux"
+import { connect, useDispatch, useSelector } from "react-redux"
 
 
 
@@ -109,10 +109,19 @@ const styles = StyleSheet.create({
     }),
 })
 
-function RenderPlantsGroup({ item, rightToChange, scrollToTop }) {
+const renderItem = (item, elem, selectedAll, scrollToTop) => {
+   return <RenderOrderByGroup
+        key={shortid.generate()}
+        plant={item} order={elem}
+        selectedAll={selectedAll}
+        scrollToTop={scrollToTop}
+    />
+}
+
+const RenderPlantsGroup = memo(({ item, scrollToTop, currentColor, rightToChange }) => {
     const [selectedAll, setSelectedAll] = useState(false)
     const dispatch = useDispatch()
-    const currentColor = useSelector(state => state.currentColorStep)
+    //const rightToChange = useSelector(state => state.currentStep.rightToChange)
 
     let qty = 0
     item.orders.forEach(elem => qty += elem.qty)
@@ -121,7 +130,7 @@ function RenderPlantsGroup({ item, rightToChange, scrollToTop }) {
         await dispatch(setSearchText(value))
         await scrollToTop()
     }
-console.log('RenderPlantsGroup', item.storage.name)
+console.log('RenderPlantsGroup', item.product.name)
     return (
         <View style={styles.rowFront}>
             <View style={styles.costLineWrapper}>
@@ -167,21 +176,20 @@ console.log('RenderPlantsGroup', item.storage.name)
                 </View>
                 <View style={styles.changeinfo}>
                     <View style={styles.orderInfoBlock}>
-                        {item.orders.map(elem =>
-                            <RenderOrderByGroup
-                                key={shortid.generate()}
-                                plant={item} order={elem}
-                                selectedAll={selectedAll}
-                                scrollToTop={scrollToTop}
-                            />
-                        )}
+                        {item.orders.map(elem => renderItem(item, elem, selectedAll, scrollToTop))}
                     </View>
                 </View>
             </View>
         </View>
 
     )
-}
+}, (prevProps, nextProps) => {
+    return prevProps.currentColor != nextProps.currentColor || prevProps.rightToChange != nextProps.rightToChange
+})
 
+const mapStateToProps = state => ({   
+    currentColor: state.currentColorStep,
+    rightToChange: state.currentStep?.rightToChange
+})
 
-export default memo(RenderPlantsGroup)
+export default connect(mapStateToProps)(RenderPlantsGroup)

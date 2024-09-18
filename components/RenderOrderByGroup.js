@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     },
 })
 
-function RenderOrderByGroup({ order, selectedAll, plant, currentStep, scrollToTop }) {
+const RenderOrderByGroup = memo(({ order, selectedAll, plant, currentStep, scrollToTop }) => {
     const dispatch = useDispatch()
     const { orderId, orderNo, customerName, qty, shipmentDate, shipmentMethod, lastChange, comment } = order
     const { characteristic, product, unit, storage } = plant
@@ -149,7 +149,7 @@ function RenderOrderByGroup({ order, selectedAll, plant, currentStep, scrollToTo
             setModalState()
         }
     }, [selectedAll, orderCheckBox])
-   
+    console.log('RenderOrderByGroup', customerName)
     return (
         <SafeAreaView style={styles.viewContainer}>            
             <TouchableOpacity style={{flex: 1}} onPress={() => searchPoint(customerName)}>
@@ -233,11 +233,12 @@ function RenderOrderByGroup({ order, selectedAll, plant, currentStep, scrollToTo
             </View>
         </SafeAreaView>
     )
-}
+}, (prevProps, nextProps) => {
+    return prevProps.currentStep != nextProps.currentStep 
+})
 
 const mapStateToProps = state => ({
-    currentStep: state.currentStep,    
-    token: state.token,
+    currentStep: state.currentStep,
     groupOrders: state.groupOrders
 })
 

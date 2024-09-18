@@ -117,10 +117,10 @@ const renderItem = (orderId, elem, selectedAllOrder, shipmentMethod, customerNam
 }
 
 
-const RenderOrders = ({ orders, rightToChange, currentColor, scrollToTop }) => {
+const RenderOrders = memo(({ order, currentColor, scrollToTop, rightToChange }) => {
     const dispatch = useDispatch()
     const [selectedAllOrder, setSelectedAllOrder] = useState(false)
-    const { customerName, orderNo, shipmentMethod, shipmentDate, products, orderId, comment } = orders   
+    const { customerName, orderNo, shipmentMethod, shipmentDate, products, orderId, comment } = order
 
     let qty = 0
     products.forEach(el => qty += el.qty)
@@ -129,7 +129,7 @@ const RenderOrders = ({ orders, rightToChange, currentColor, scrollToTop }) => {
         await dispatch(setSearchText(value))
         await scrollToTop()
     }    
-    console.log("RenderOrder",)    
+    console.log("RenderOrder", rightToChange)    
     return (
         <View style={styles.rowFront} >
             <View style={styles.costLineWrapper}>
@@ -204,10 +204,13 @@ const RenderOrders = ({ orders, rightToChange, currentColor, scrollToTop }) => {
             </View>
         </View>
     )
-}
+}, (prevProps, nextProps) => {
+    return prevProps.currentColor != nextProps.currentColor || prevProps.rightToChange != nextProps.rightToChange
+})
 
 const mapStateToProps = state => ({   
     currentColor: state.currentColorStep,
+    rightToChange: state.currentStep?.rightToChange
 })
 
-export default connect(mapStateToProps)(memo(RenderOrders))
+export default connect(mapStateToProps)(RenderOrders)

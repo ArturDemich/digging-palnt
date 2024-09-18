@@ -8,15 +8,23 @@ import {
   setTotalQty,
   setCurrentColorStep,
   setBTPermission,
-  setNewVersion
+  setNewVersion,
+  setLodingOrders,
+  setLodingPlants
 } from "./dataSlice"
 import { Platform } from "react-native"
 //import { useBluetoothPermissions } from "../hooks/useBTPermission"
 
 
-export const getOrdersStep = (stepId, storageId, token) => async (dispatch) => {
+export const getOrdersStep = (newStep) => async (dispatch, getState) => {
   try {
-    const res = await DataService.getStepOrders(stepId.id, storageId, token)
+    dispatch(setLodingOrders(true))
+    const state = getState();
+    const stepId = state.currentStep; 
+    const storageId = state.currentStorageId; 
+    const token = state.token[0]?.token;
+    console.log("THUNK getOrdersStep", storageId)
+    const res = await DataService.getStepOrders(stepId.id, storageId.id, token)
     if (res.success) {
       dispatch(setStepOrders(res))
 
@@ -27,6 +35,7 @@ export const getOrdersStep = (stepId, storageId, token) => async (dispatch) => {
         plants: productQty
       }
       dispatch(setTotalQty(total))
+      dispatch(setLodingOrders(false))
     } else {
       console.log('Something went wrong!', res.errors)
     }
@@ -35,9 +44,15 @@ export const getOrdersStep = (stepId, storageId, token) => async (dispatch) => {
   }
 }
 
-export const getGroupOrdersThunk = (stepId, storageId, token) => async (dispatch) => {
+export const getGroupOrdersThunk = () => async (dispatch, getState) => {
   try {
-    const res = await DataService.getGroupOrders(stepId.id, storageId, token)
+    dispatch(setLodingPlants(true))
+    const state = getState();
+    const stepId = state.currentStep; 
+    const storageId = state.currentStorageId; 
+    const token = state.token[0]?.token;
+    console.log("THUNK getGroupOrdersThunk", storageId)
+    const res = await DataService.getGroupOrders(stepId.id, storageId.id, token)
     if (res.success) {
       dispatch(setGroupOrders(res))
 
@@ -48,6 +63,7 @@ export const getGroupOrdersThunk = (stepId, storageId, token) => async (dispatch
         plants: productQty
       }
       dispatch(setTotalQty(total))
+      dispatch(setLodingPlants(false))
     } else {
       console.log('Something went wrong!', res.errors)
     }

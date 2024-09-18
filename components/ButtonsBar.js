@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, TouchableHighlight } from 'react-native'
 import { connect, useDispatch } from 'react-redux'
 import { clearDataChange, setCurrentColorStep, setCurrentStep } from '../state/dataSlice'
+import { getGroupOrdersThunk, getOrdersStep } from '../state/dataThunk'
 
 
 const styles = StyleSheet.create({
@@ -71,14 +72,15 @@ const colorStepBtn = {
     }
 }
 
-function ButtonsBar({ steps, currentStep}) {
+function ButtonsBar({route, steps, currentStep}) {
     const dispatch = useDispatch()
 
     const setDataState = async (newStep) => {
-        //await setLoading()
-        await dispatch(clearDataChange())
+        console.log('ButtonsBar', route)
+        await dispatch(clearDataChange())        
         await dispatch(setCurrentStep(newStep))
         await dispatch(setCurrentColorStep(newStep.theme))
+        await dispatch(route.name === 'Замовлення' ?  getOrdersStep(newStep) : getGroupOrdersThunk())
     }
 
     const setColor = (val) => {
@@ -119,7 +121,7 @@ function ButtonsBar({ steps, currentStep}) {
                 alert('Step Name not defined')
         }
     }
-
+    
     return (
         <View style={styles.statusBar}>
             {steps.map((step) => (

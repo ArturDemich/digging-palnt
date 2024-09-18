@@ -1,5 +1,5 @@
 import Checkbox from 'expo-checkbox'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import { Text, TextInput, StyleSheet, View, TouchableOpacity } from 'react-native'
 import { useDispatch, connect } from 'react-redux'
 import { clearDataChangeItem, setDataChange, setSearchText } from '../state/dataSlice'
@@ -7,8 +7,9 @@ import { MaterialCommunityIcons, Entypo } from '@expo/vector-icons'
 
 
 
-const RenderPlants = ({ orderId, selectedAllOrder, prodactElem, currentStep, orders, shipmentMethod, customerName, currentColor, scrollToTop}) => {
+const RenderPlants = memo(({ orderId, selectedAllOrder, prodactElem, currentStep, orders, shipmentMethod, customerName, currentColor, scrollToTop}) => {
     const dispatch = useDispatch()
+
     const { characteristic, lastChange, product, qty, unit, storage } = prodactElem
     const [plantCheckBox, setPlantCheckBox] = useState(selectedAllOrder)
     const [qtyState, setQty] = useState(qty)
@@ -158,7 +159,9 @@ const RenderPlants = ({ orderId, selectedAllOrder, prodactElem, currentStep, ord
             </View>
         </View>
     )
-}
+}, (prevProps, nextProps) => {
+    return prevProps.currentStep != nextProps.currentStep 
+})
 
 const mapStateToProps = state => ({
     currentStep: state.currentStep,

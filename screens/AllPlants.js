@@ -1,53 +1,107 @@
 import { useFocusEffect } from '@react-navigation/native'
 import React, { useCallback, useRef, useState } from 'react'
-import { StyleSheet, View, ActivityIndicator, Platform } from 'react-native'
+import { Text, StyleSheet, View, FlatList, ActivityIndicator, Platform, RefreshControl } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { useDispatch, connect } from 'react-redux'
 import ButtonsBar from '../components/ButtonsBar'
 import NextStepButton from '../components/NextStepButton'
-import OrderFlatList from '../components/OrderFlatList'
+import RenderPlantsGroup from '../components/RenderPlantsGroup'
+import { getGroupOrdersThunk } from '../state/dataThunk'
+import { clearDataChange, clearGroupOrders } from '../state/dataSlice'
 import QuantityOrders from '../components/QuantityOrders'
 //import PrinterModal from '../components/printer/PrinterModal'
 
 
 
 
-function AllPlantsScreen({ route }) {
-    const [loading, setLoading] = useState(false)
-    const isFirstRender = useRef(true);
-    
-    const setLoadingTrue = useCallback(() => setLoading(true), []);
-    const setLoadingFalse = useCallback(() => setLoading(false), []);
+function AllPlantsScreen({ route, groupOrders, loading, filterPlants }) {   
+    const [refresh, setRefresh] = useState(false)
+    const dispatch = useDispatch()
+    const flatListTopRef = useRef(null);
 
-    const setFirstRender = () => {
-        isFirstRender.current = false;
-    }    
+    const scrollToTop = () => {
+        if (flatListTopRef.current) {
+            flatListTopRef.current.scrollToOffset({offset: 0, animated: false})
+        }
+    }
 
-    /* useFocusEffect(
+    const renderItem = useCallback(({ item }) => {
+        return <RenderPlantsGroup item={item} scrollToTop={scrollToTop} />
+    }, [])
+    const keyExtractor = useCallback((item, index) => (item.product.id.toString() + index), [])
+
+    const getGroupOrders = async () => {
+        await new Promise((resolve) => setTimeout(resolve, 300))
+        await dispatch(getGroupOrdersThunk())
+    }
+
+    const onRefresh = async () => {
+        setRefresh(true)
+        await dispatch(getGroupOrdersThunk())
+        setRefresh(false)
+    }
+
+    useFocusEffect(
         useCallback(() => {
-            getGroupOrders().then(() => setLoading(false))
-            return () => dispatch(clearDataChange())
-        }, [currentStep])
+            getGroupOrders()
+            return () => {
+                dispatch(clearDataChange())
+                dispatch(clearGroupOrders())
+            }
+        }, [])
 
-    ) */
-    console.log('AllPlantsScreen', route)
+    )
+    console.log('AllPlantsScreen loading', loading)
     return (
         <SafeAreaView style={styles.container}>
-            <QuantityOrders route={route} />
+            <QuantityOrders route={route}/>
             {loading ?
                 <View style={styles.loader}>
                     <ActivityIndicator size="large" color="#45aa45" />
                 </View> :
-                <OrderFlatList setLoadingTrue={setLoadingTrue} setLoadingFalse={setLoadingFalse} isFirstRender={isFirstRender} setFirstRender={setFirstRender} route={route}/>
+                groupOrders.length == 0 ?
+                    <View style={styles.costLineWrapper}>
+                        <Text
+                            style={styles.noneData}
+                            allowFontScaling={true}
+                            maxFontSizeMultiplier={1}
+                        >В цьому полі немає рослин з таким сатусом</Text>
+                    </View> :
+                    filterPlants === null ?
+                        <View style={styles.costLineWrapper}>
+                            <Text style={styles.noneData}>Не знайдено!</Text>
+                        </View> :
+                        <FlatList
+                            ref={flatListTopRef}
+                            data={filterPlants?.length > 0 ? filterPlants : groupOrders}
+                            renderItem={renderItem}
+                            keyExtractor={keyExtractor}
+                            refreshControl={<RefreshControl onRefresh={onRefresh} refreshing={refresh} />}
+                            refreshing={refresh}
+                            initialNumToRender='7'
+                            maxToRenderPerBatch='7'
+                            windowSize={15}
+                            ListFooterComponentStyle={{ marginBottom: 30 }}
+                            ListFooterComponent={<View></View>}
+                        />
             }
             <NextStepButton path={route.name} />
             {/* <PrinterModal /> */}
-            <ButtonsBar />
+            <ButtonsBar route={route}/>
         </SafeAreaView>
     )
 }
 
+const mapStateToProps = state => {
+    return {
+        groupOrders: state.groupOrders,
+        filterPlants: state.filterPlants,
+        loading: state.lodingPlants
+    }
+}
+export default connect(mapStateToProps)(AllPlantsScreen)
 
-export default AllPlantsScreen
+
 
 
 const styles = StyleSheet.create({
@@ -56,11 +110,36 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginBottom: 3,
         marginTop: Platform.OS === 'ios' ? -45 : 0,
-    },    
+    },
+    costLineWrapper: {
+        height: 'auto',
+        flex: 1,
+        flexDirection: 'column',
+        width: '100%',
+        paddingLeft: 5,
+        paddingRight: 5
+    },
+    textinfo: {
+        color: 'black',
+        fontSize: 13,
+        fontWeight: 700,
+    },
+    infoblock: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        marginBottom: 7,
+        marginTop: 7
+    },
     loader: {
         height: 'auto',
         width: '100%',
         justifyContent: 'center',
         flex: 1
-    },    
+    },
+    noneData: {
+        fontSize: 20,
+        textAlign: 'center',
+        fontWeight: 900,
+        color: 'gray',
+    },
 })
