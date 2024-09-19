@@ -17,13 +17,13 @@ function NewVersion({ }) {
         setShow(!show)
     }
 
-    const get = async () => {
-        if (String(ver) < String(version?.version)) {
+    const get = () => {
+        if (version && version.version?.length > 0 && String(ver) < String(version.version)) {
             setShow(true)
         }
     }
 
-    useEffect(() => {       
+    useEffect(() => {
         get()
     }, [version])
 

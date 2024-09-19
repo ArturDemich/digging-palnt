@@ -6,17 +6,23 @@ import { StatusBar } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import * as SplashScreen from 'expo-splash-screen';
 
-SplashScreen.preventAutoHideAsync();
-
 
 export default function App() {  
 
   useEffect(() => {
-    const hideSplash = async () => {
-      await SplashScreen.hideAsync();
+    const prepare = async () => {
+      try {        
+        await SplashScreen.preventAutoHideAsync();
+
+        setTimeout(async () => {
+          await SplashScreen.hideAsync();
+        }, 3000); 
+      } catch (e) {
+        console.warn(e);
+      }
     };
 
-    hideSplash();
+    prepare();
   }, []);
 
   return (
