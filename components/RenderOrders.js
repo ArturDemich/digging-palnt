@@ -129,7 +129,7 @@ const RenderOrders = memo(({ order, currentColor, scrollToTop, rightToChange }) 
         await dispatch(setSearchText(value))
         await scrollToTop()
     }    
-    console.log("RenderOrder", rightToChange)    
+       
     return (
         <View style={styles.rowFront} >
             <View style={styles.costLineWrapper}>
@@ -141,7 +141,7 @@ const RenderOrders = memo(({ order, currentColor, scrollToTop, rightToChange }) 
                                 maxFontSizeMultiplier={1}
                             >{customerName}</Text>
                         </TouchableOpacity>
-                        {rightToChange ?
+                        {rightToChange && products.length > 1 ?
                             <Checkbox
                                 value={selectedAllOrder}
                                 color='#45aa45'

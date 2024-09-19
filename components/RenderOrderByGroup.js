@@ -91,6 +91,11 @@ const RenderOrderByGroup = memo(({ order, selectedAll, plant, currentStep, scrol
     const [orderCheckBox, setOrderCheckBox] = useState(selectedAll)
     const [qtyInput, setQtyInput] = useState(qty)
     
+    const searchPoint = async (value) => {
+        await dispatch(setSearchText(value))
+        await scrollToTop()
+    }
+    
     const setModalState = () => {
         const orders = {
             storageId: storage.id,
@@ -128,12 +133,7 @@ const RenderOrderByGroup = memo(({ order, selectedAll, plant, currentStep, scrol
             setModalState()
             setOrderCheckBox(true)
         }
-    }
-
-    const searchPoint = async (value) => {
-        await dispatch(setSearchText(value))
-        await scrollToTop()
-    }
+    }    
 
     useEffect(() => {        
         if (selectedAll === true && orderCheckBox === true) {
@@ -149,7 +149,7 @@ const RenderOrderByGroup = memo(({ order, selectedAll, plant, currentStep, scrol
             setModalState()
         }
     }, [selectedAll, orderCheckBox])
-    console.log('RenderOrderByGroup', customerName)
+    
     return (
         <SafeAreaView style={styles.viewContainer}>            
             <TouchableOpacity style={{flex: 1}} onPress={() => searchPoint(customerName)}>

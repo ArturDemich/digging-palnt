@@ -86,7 +86,7 @@ export class DataService {
 
     static async getToken(log, pass) {
         let url = await SecureStore.getItemAsync('getToken')
-        console.log('getTok')
+        
         return await axios.post(url, { login: log, password: pass }, {
             headers: { 'Authorization': 'Basic ' + encodedToken }
         })

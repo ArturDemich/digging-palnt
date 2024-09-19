@@ -9,7 +9,7 @@ import RenderPlantsGroup from '../components/RenderPlantsGroup'
 import { getGroupOrdersThunk } from '../state/dataThunk'
 import { clearDataChange, clearGroupOrders } from '../state/dataSlice'
 import QuantityOrders from '../components/QuantityOrders'
-//import PrinterModal from '../components/printer/PrinterModal'
+import PrinterModal from '../components/printer/PrinterModal'
 
 
 
@@ -51,7 +51,7 @@ function AllPlantsScreen({ route, groupOrders, loading, filterPlants }) {
         }, [])
 
     )
-    console.log('AllPlantsScreen loading', loading)
+    
     return (
         <SafeAreaView style={styles.container}>
             <QuantityOrders route={route}/>
@@ -86,7 +86,7 @@ function AllPlantsScreen({ route, groupOrders, loading, filterPlants }) {
                         />
             }
             <NextStepButton path={route.name} />
-            {/* <PrinterModal /> */}
+            <PrinterModal />
             <ButtonsBar route={route}/>
         </SafeAreaView>
     )
@@ -100,8 +100,6 @@ const mapStateToProps = state => {
     }
 }
 export default connect(mapStateToProps)(AllPlantsScreen)
-
-
 
 
 const styles = StyleSheet.create({

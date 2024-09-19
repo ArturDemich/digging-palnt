@@ -76,7 +76,6 @@ function ButtonsBar({route, steps, currentStep}) {
     const dispatch = useDispatch()
 
     const setDataState = async (newStep) => {
-        console.log('ButtonsBar', route)
         await dispatch(clearDataChange())        
         await dispatch(setCurrentStep(newStep))
         await dispatch(setCurrentColorStep(newStep.theme))

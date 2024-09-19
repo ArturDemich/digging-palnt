@@ -1,87 +1,21 @@
-import Checkbox from 'expo-checkbox'
-import React, { memo, useEffect, useState } from 'react'
-import { Text, TextInput, StyleSheet, View, TouchableOpacity } from 'react-native'
+import React, { memo } from 'react'
+import { Text, StyleSheet, View, TouchableOpacity } from 'react-native'
 import { useDispatch, connect } from 'react-redux'
-import { clearDataChangeItem, setDataChange, setSearchText } from '../state/dataSlice'
+import { setSearchText } from '../state/dataSlice'
 import { MaterialCommunityIcons, Entypo } from '@expo/vector-icons'
+import CheckInputBox from './CheckInputBox'
+import shortid from 'shortid'
 
 
 
-const RenderPlants = memo(({ orderId, selectedAllOrder, prodactElem, currentStep, orders, shipmentMethod, customerName, currentColor, scrollToTop}) => {
+const RenderPlants = memo(({ orderId, selectedAllOrder, prodactElem, currentStep, shipmentMethod, customerName, currentColor, scrollToTop}) => {
     const dispatch = useDispatch()
-
-    const { characteristic, lastChange, product, qty, unit, storage } = prodactElem
-    const [plantCheckBox, setPlantCheckBox] = useState(selectedAllOrder)
-    const [qtyState, setQty] = useState(qty)
-
-    const checkInput = (value) => {
-        if (Number(value) || value === '') {
-            if (Number(value) > Number(qty)) {
-                alert('Кількість рослин не може бути більша ніж в замовленні')
-            } else {
-                setQty(value)
-            }
-        } else {
-            alert('Введіть кількіть викопаних рослин - цифрами')
-        }
-    }
-    
-    const setModalState = () => {
-        const orders = {
-            storageId: storage.id,
-            currentstepId: currentStep.id,
-            orderId: orderId,
-            productid: product.id,
-            characteristicid: characteristic.id,
-            unitid: unit.id,
-            actionqty: Number(qtyState),
-            qty: Number(qtyState),
-            productName: product.name,
-            characteristicName: characteristic.name,
-            shipmentMethod: shipmentMethod,
-            customerName: customerName,
-            currentStorage: storage.name
-        }
-        dispatch(setDataChange(orders))
-    }
-
-    const inputOnBlur = () => {
-        if (qtyState === '') {
-            setQty(qty)
-        } else {
-            setModalState()
-            setPlantCheckBox(true)
-        }
-    }
+    const { characteristic, lastChange, product, qty, storage } = prodactElem    
 
     const searchPoint = async (value) => {
         await dispatch(setSearchText(value))
         await scrollToTop()
-    }       
-
-    const clearDataByCheckBox = () => {
-        if (plantCheckBox === false ) {
-            console.log("RenderPlant_clearDataByCheckBox")
-            dispatch(clearDataChangeItem({
-                orderId: orderId,
-                productid: product.id,
-                characteristicid: characteristic.id,
-                storageId: storage.id,
-            }))
-        }
-    }
-
-    useEffect(() => {        
-        if (selectedAllOrder === true && plantCheckBox === true) {
-            setModalState()
-        } else if (plantCheckBox === true) {
-            setModalState()
-        } else {
-            clearDataByCheckBox()
-        }
-    }, [selectedAllOrder, plantCheckBox, orders])
-    
-    console.log("RenderPlants ", customerName)
+    }        
     
     return (
         <View style={styles.infoBlock}>
@@ -123,38 +57,13 @@ const RenderPlants = memo(({ orderId, selectedAllOrder, prodactElem, currentStep
                         </TouchableOpacity>
                     </View>
                     
-                    {currentStep.rightToChange ?
-                        <View style={styles.changeinfo}>
-                            <View style={styles.changeinfoblock}>
-                                <Text
-                                    style={styles.quantity}
-                                    allowFontScaling={true}
-                                    maxFontSizeMultiplier={1}
-                                >
-                                    Викопано:
-                                </Text>
-                                <TextInput
-                                    style={styles.input}
-                                    onChangeText={checkInput}
-                                    value={String(qtyState)}
-                                    inputMode='numeric'
-                                    keyboardType="numeric"
-                                    onBlur={(val) => inputOnBlur()}
-                                    autoFocus={false}
-                                    onFocus={() => setQty('')}
-                                    allowFontScaling={true}
-                                    maxFontSizeMultiplier={1}
-                                />
-                            </View>
-                            <Checkbox
-                                value={plantCheckBox}
-                                color='#45aa45'
-                                onValueChange={() => {
-                                    setPlantCheckBox(!plantCheckBox)
-                                }}
-                                style={styles.checkBox}
-                            />
-                        </View> : null}
+                    {currentStep.rightToChange ? 
+                    <CheckInputBox 
+                        orderId={orderId} selectedAllOrder={selectedAllOrder} 
+                        prodactElem={prodactElem} currentStep={currentStep} 
+                        shipmentMethod={shipmentMethod} customerName={customerName} 
+                         key={shortid.generate()} /> 
+                        : null}
                 </View>
             </View>
         </View>
@@ -228,29 +137,7 @@ const styles = StyleSheet.create({
         paddingBottom: 5,
         fontSize: 14,
         fontWeight: 500,        
-    },
-    changeinfo: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center'
-    },
-    changeinfoblock: {
-        flexDirection: 'row'
-    },
-    input: {
-        height: 28,
-        width: 40,
-        margin: 7,
-        borderWidth: 1,
-        borderColor: 'black',
-        textAlign: 'center',
-        alignSelf: 'flex-start',
-    },
-    checkBox: {
-        alignSelf: 'center',
-        height: 32,
-        width: 32,
-    },
+    },    
     changeDate: {
         alignSelf: 'flex-end',
         fontSize: 11,

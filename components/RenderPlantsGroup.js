@@ -5,7 +5,7 @@ import shortid from "shortid"
 import RenderOrderByGroup from "./RenderOrderByGroup"
 import { MaterialCommunityIcons, Entypo } from '@expo/vector-icons'
 import { setSearchText } from "../state/dataSlice"
-import { connect, useDispatch, useSelector } from "react-redux"
+import { connect, useDispatch } from "react-redux"
 
 
 
@@ -121,7 +121,6 @@ const renderItem = (item, elem, selectedAll, scrollToTop) => {
 const RenderPlantsGroup = memo(({ item, scrollToTop, currentColor, rightToChange }) => {
     const [selectedAll, setSelectedAll] = useState(false)
     const dispatch = useDispatch()
-    //const rightToChange = useSelector(state => state.currentStep.rightToChange)
 
     let qty = 0
     item.orders.forEach(elem => qty += elem.qty)
@@ -130,7 +129,7 @@ const RenderPlantsGroup = memo(({ item, scrollToTop, currentColor, rightToChange
         await dispatch(setSearchText(value))
         await scrollToTop()
     }
-console.log('RenderPlantsGroup', item.product.name)
+
     return (
         <View style={styles.rowFront}>
             <View style={styles.costLineWrapper}>
@@ -141,7 +140,7 @@ console.log('RenderPlantsGroup', item.product.name)
                             maxFontSizeMultiplier={1}
                         >{item.product.name}</Text>
                     </TouchableOpacity>
-                    {rightToChange ?
+                    {rightToChange && item.orders.length > 1 ?
                         <Checkbox
                             value={selectedAll}
                             color='#45aa45'

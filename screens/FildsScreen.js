@@ -90,17 +90,13 @@ function MainScreen({ navigation, digStorages }) {
   const navToOrders = async (store) => {
     await dispatch(setStorageId(store))
   }
-
-  console.log('MainScreen')
-
+ 
   function renderFildsButton({ item }) {
-    console.log('renderFildsButton')
+    
     return (
       <TouchableOpacity
         style={styles.button}
         onPress={() => {
-          /* dispatch(setStorageId(item));
-          navigation.navigate("Поле", { title: item.name }); */
           navToOrders(item).finally(() => navigation.navigate("Поле", { title: item.name }))          
         }}
       >

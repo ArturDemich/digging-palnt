@@ -9,7 +9,7 @@ import RenderOrders from '../components/RenderOrders'
 import { getOrdersStep } from '../state/dataThunk'
 import { clearDataChange, clearStepOrders } from '../state/dataSlice'
 import QuantityOrders from '../components/QuantityOrders'
-//import PrinterModal from '../components/printer/PrinterModal'
+import PrinterModal from '../components/printer/PrinterModal'
 
 const OrdersScreen = ({ orders, route, loading, filterOrders }) => {
     const dispatch = useDispatch()
@@ -48,7 +48,7 @@ const OrdersScreen = ({ orders, route, loading, filterOrders }) => {
             }
         }, [])
     )
-    console.log('Order loading', loading)
+    
     return (
         <SafeAreaView style={styles.container}>
             <QuantityOrders route={route}/>
@@ -78,7 +78,7 @@ const OrdersScreen = ({ orders, route, loading, filterOrders }) => {
                         />
             }
             <NextStepButton path={route.name} />
-            {/* <PrinterModal /> */}
+            <PrinterModal />
             <ButtonsBar route={route} />
 
         </SafeAreaView>
@@ -93,7 +93,6 @@ const mapStateToProps = state => {
     }
 }
 export default connect(mapStateToProps)(OrdersScreen)
-
 
 
 const styles = StyleSheet.create({

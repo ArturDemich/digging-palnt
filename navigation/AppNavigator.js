@@ -7,7 +7,7 @@ import FildScreen from '../screens/Fild'
 import FildsScreen from '../screens/FildsScreen'
 import { useDispatch, useSelector } from 'react-redux'
 import LoginScreen from '../screens/Login'
-import { setBTPermission, setToken } from '../state/dataSlice'
+import { setToken } from '../state/dataSlice'
 import ButtonOut from '../components/ButtonOut'
 import HeaderTitle from '../components/HeaderTitle'
 import Notification from '../components/Notification'
@@ -74,7 +74,6 @@ export default function Navigate() {
                                         return (
                                             <View style={{ flexDirection: 'row', gap: 5 }} >
                                                 <Notification />
-
                                                 <ButtonOut navigation={navigation} token={token} />
                                             </View>
                                         )

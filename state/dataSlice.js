@@ -45,7 +45,6 @@ export const dataSlice = createSlice({
         },
         setStepOrders(state, action) {
             state.stepOrders = action.payload.data
-            console.log('Slise setStepOrders')
         },
         setGroupOrders(state, action) {
             state.groupOrders = action.payload.data
@@ -64,7 +63,6 @@ export const dataSlice = createSlice({
         },
         setStorageId(state, action) {
             state.currentStorageId = action.payload
-            console.log('Slice StorID', state.currentStorageId)
         },
         setSearchText(state, action) {
             state.searchText = action.payload
@@ -141,7 +139,6 @@ export const dataSlice = createSlice({
             } else {
                 state.dataChange = [...orders, action.payload]
             }
-            console.log('setDataChange', state.dataChange.length)
         },
 
         clearDataChangeItem(state, action) {            
@@ -157,7 +154,6 @@ export const dataSlice = createSlice({
                     const removed = orders.splice(eix, 1)
                     state.dataChange = orders
                 }
-                console.log('clearDataChangeItem', state.dataChange.length)
             }
             
         },

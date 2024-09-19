@@ -5,11 +5,10 @@ import AllPlants from './AllPlants'
 import { connect, useDispatch } from 'react-redux';
 import { setStorageId } from '../state/dataSlice';
 import { useEffect } from 'react';
-import ButtonsBar from '../components/ButtonsBar';
 
 const Tab = createMaterialTopTabNavigator();
 
-function FildScreen({ currentColor, token, digStorages }) {
+function FildScreen({ currentColor, digStorages }) {
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -19,7 +18,6 @@ function FildScreen({ currentColor, token, digStorages }) {
     }, [])
 
     return (
-        <>
             <Tab.Navigator
                 initialRouteName="Замовлення"
                 screenOptions={{
@@ -35,25 +33,20 @@ function FildScreen({ currentColor, token, digStorages }) {
                 <Tab.Screen
                     name="Замовлення"
                     component={Order}
-                    options={{ tabBarLabel: 'Замовлення' }}
-                    initialParams={{ token: token }}
+                    options={{ tabBarLabel: 'Замовлення' }}                    
                 />
                 <Tab.Screen
                     name="Рослини Замовлення"
                     component={AllPlants}
                     options={{ tabBarLabel: 'Всі Рослини' }}
-                    initialParams={{ token: token }}
                 />
 
             </Tab.Navigator>
-            {/* <ButtonsBar /> */} 
-        </>
     )
 }
 
 const mapStateToProps = state => ({
     currentColor: state.currentColorStep,
-    token: state.token,
     digStorages: state.digStorages
 })
 

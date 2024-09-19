@@ -21,7 +21,6 @@ function Search({orders, groupOrders, navigation, searchText}) {
     }
 
      const clearInput = async () => {
-        console.log('Searche clearInput',  Boolean(searchText))
         await turnLoding(true)
         await dispatch(setSearchText(''))
         await dispatch(setFilterOrders([]))
@@ -46,7 +45,6 @@ function Search({orders, groupOrders, navigation, searchText}) {
     }, [orders, groupOrders]) 
 
     const setFilter = async () => {
-        console.log('Searche setFilter',  Boolean(searchText))
        await turnLoding(true)
         searchOrders(routeIdx === 1 ? groupOrders : orders)
         setInputShow(true)
@@ -186,8 +184,7 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         alignItems: 'center',
-        height: 56, 
-        
+        height: 56,         
     },
     input: {
         borderWidth: 1,
@@ -216,7 +213,6 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginLeft: 3,
         marginRight: 3,
-
     },
     close: {
         backgroundColor: '#f2f2f2',

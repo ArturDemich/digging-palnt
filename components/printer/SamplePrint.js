@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TouchableHighlight, Dimensions } from 'react-native';
-//import { BluetoothTscPrinter } from 'react-native-bluetooth-escpos-printer';
+import { BluetoothTscPrinter } from 'react-native-bluetooth-escpos-printer';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 
@@ -24,7 +24,7 @@ export async function printreciept(labe) {
       break;
   }
 
-  /* try {
+  try {
     let options = {
       width: 51,
       height: 30,
@@ -46,7 +46,7 @@ export async function printreciept(labe) {
   } catch (e) {
     alert(e.message || 'ERROR');
     console.log('ERROR', e)
-  } */
+  }
 }
 
 const SamplePrint = ({ press }) => {
