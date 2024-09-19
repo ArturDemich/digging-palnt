@@ -18,12 +18,12 @@ function NewVersion({ }) {
     }
 
     const get = async () => {
-        if (String(ver) < String(version)) {
+        if (String(ver) < String(version?.version)) {
             setShow(true)
         }
     }
 
-    useEffect(() => {
+    useEffect(() => {       
         get()
     }, [version])
 

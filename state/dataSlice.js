@@ -21,7 +21,7 @@ const initialState = {
     filterPlantQty: null,
     filterOrderQty: null,
     btPermission: [],
-    newVersion: ''
+    newVersion: {}
 }
 
 export const dataSlice = createSlice({
@@ -187,7 +187,7 @@ export const dataSlice = createSlice({
             state.filterPlantQty = null,
             state.filterOrderQty = null,
             state.btPermission = [],
-            state.newVersion = '',
+            state.newVersion = {},
             state.lodingOrders = false,
             state.lodingPlants = false
         },

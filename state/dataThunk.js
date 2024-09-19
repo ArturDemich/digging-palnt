@@ -110,7 +110,8 @@ export const getNewVersion = () => async (dispatch) => {
     await SecureStore.setItemAsync('getStorages', res.api.getStorages)
     await SecureStore.setItemAsync('getToken', res.api.getToken)
     await SecureStore.setItemAsync('setNextOrderStep', res.api.setNextOrderStep)
-    await dispatch(setNewVersion(res.version))
+    await dispatch(setNewVersion(res))
+    
     return await res
   } catch (error) {
     console.log("Get_VERSION ERROR Thunk: " + JSON.stringify(error));
