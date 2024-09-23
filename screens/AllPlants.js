@@ -1,5 +1,5 @@
 import { useFocusEffect } from '@react-navigation/native'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import { Text, StyleSheet, View, FlatList, ActivityIndicator, Platform, RefreshControl } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useDispatch, connect } from 'react-redux'
@@ -17,10 +17,17 @@ function AllPlantsScreen({ route, groupOrders, currentStep, totalPlantQty, stora
     const [loading, setLoading] = useState(true)
     const { token } = route.params
     const [refresh, setRefresh] = useState(false)
+    const flatListTopRef = useRef(null);
     const dispatch = useDispatch()
 
+    const scrollToTop = () => {
+        if (flatListTopRef.current) {
+            flatListTopRef.current.scrollToOffset({offset: 0, animated: true})
+        }
+    }
+
     const renderItem = useCallback(({ item }) => {
-        return <RenderPlantsGroup item={item} rightToChange={currentStep.rightToChange} />
+        return <RenderPlantsGroup item={item} rightToChange={currentStep.rightToChange} scrollToTop={scrollToTop} />
     }, [currentStep])
     const keyExtractor = useCallback((item, index) => (item.product.id.toString() + index), [])
 
@@ -69,6 +76,7 @@ function AllPlantsScreen({ route, groupOrders, currentStep, totalPlantQty, stora
                         <Text style={styles.noneData}>Не знайдено!</Text>
                     </View> :
                     <FlatList
+                        ref={flatListTopRef}
                         data={filterPlants?.length > 0 ? filterPlants : groupOrders}
                         renderItem={renderItem}
                         keyExtractor={keyExtractor}

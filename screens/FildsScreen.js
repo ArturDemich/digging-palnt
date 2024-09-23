@@ -46,17 +46,50 @@ const styles = StyleSheet.create({
     }
 })
 
+const filterStorages = (stateStorages) => {
+    const groupStore = [];
+    const singleStore = [];
+    const filterStore = [];
+  
+    stateStorages.forEach((elem) => {
+      if (elem.is_group === false) {
+        singleStore.push(elem);
+      } else if (elem.is_group === true) {
+        groupStore.push(elem);
+      } else {
+        console.log("ERROR filterStorages");
+      }
+    });
+  
+    groupStore.forEach((elem) => {
+      if (singleStore.some((item) => item.id_parent === elem.id)) {
+        filterStore.some((store) => store.id === elem.id)
+          ? null
+          : filterStore.push(elem);
+      } 
+    });
+    if (filterStore.length >= 4) {
+      groupStore.forEach(elem => {
+          elem.id_parent === '00000000-0000-0000-0000-000000000000' || null ? filterStore.unshift(elem) : null
+      })
+    }
+  
+    return filterStore;
+  };
 
 function MainScreen({ navigation, digStorages }) {
     const dispatch = useDispatch()
+
+    const navToOrders = async (store) => {
+        await dispatch(setStorageId(store?.id))
+      }
 
     function renderFildsButton({ item }) {
         return (
             <TouchableOpacity
                 style={styles.button}
                 onPress={() => {
-                    dispatch(setStorageId(item.id))
-                    navigation.navigate('Поле', { title: item.name })
+                    navToOrders(item).finally(() => navigation.navigate("Поле", { title: item.name }))
                 }}
             >
                 <Text
@@ -79,7 +112,7 @@ function MainScreen({ navigation, digStorages }) {
                     maxFontSizeMultiplier={1}
                 > Виберіть поле </Text>
                 <FlatList
-                    data={digStorages}
+                    data={filterStorages(digStorages)}
                     renderItem={renderFildsButton}
                     keyExtractor={item => item.id.toString()}
                     style={{padding: 10}}

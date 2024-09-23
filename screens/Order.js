@@ -1,5 +1,5 @@
 import { useFocusEffect } from '@react-navigation/native'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import { View, Text, StyleSheet, FlatList, ActivityIndicator, Platform, RefreshControl } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useDispatch, connect } from 'react-redux'
@@ -12,13 +12,20 @@ import { clearDataChange } from '../state/dataSlice'
 
 function OrdersScreen({ orders, route, currentStep, totalPlantQty, totalOrderQty, storageId, filterOrders, filterPlantQty, filterOrderQty }) {
     const dispatch = useDispatch()
+    const flatListTopRef = useRef(null);
     const [loading, setLoading] = useState(true)
     const [refresh, setRefresh] = useState(false)
     const { token } = route.params
 
+    const scrollToTop = () => {
+        if (flatListTopRef.current) {
+            flatListTopRef.current.scrollToOffset({ offset: 0, animated: true });
+        }
+    }
+
     const keyExtractor = useCallback((item, index) => (item.orderId.toString() + index), [])
     const renderItem = useCallback(({ item }) => {
-        return <RenderOrders orders={item} rightToChange={currentStep.rightToChange} />
+        return <RenderOrders orders={item} rightToChange={currentStep.rightToChange} scrollToTop={scrollToTop} />
     }, [currentStep])
 
     const getOrders = async () => {
@@ -42,7 +49,7 @@ function OrdersScreen({ orders, route, currentStep, totalPlantQty, totalOrderQty
 
     return (
         <SafeAreaView style={styles.container} >
-            <View style={styles.infoblock}>
+            <View style={styles.infoblock} >
                 <MaterialCommunityIcons name="pine-tree" size={24} color="black">
                     <MaterialCommunityIcons name="pine-tree" size={18} color="black" />
                     <Text style={styles.textinfo}> всіх рослин: {filterPlantQty !== null ? filterPlantQty : totalPlantQty} </Text>
@@ -63,7 +70,8 @@ function OrdersScreen({ orders, route, currentStep, totalPlantQty, totalOrderQty
                     <View style={styles.costLineWrapper}>
                         <Text style={styles.noneData}>Не знайдено!</Text>
                     </View> :
-                    <FlatList
+                    <FlatList  
+                        ref={flatListTopRef}                      
                         data={filterOrders?.length > 0 ? filterOrders : orders}
                         renderItem={renderItem}
                         keyExtractor={keyExtractor}

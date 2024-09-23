@@ -24,7 +24,7 @@ function FildScreen({ currentColor, token, digStorages }) {
                 tabBarActiveTintColor: '#ffff',
                 tabBarLabelStyle: { fontSize: 12, fontWeight: '700' },
                 tabBarStyle: { backgroundColor: currentColor, height: 40, justifyContent: 'center' },
-                tabBarIndicatorStyle: { backgroundColor: '#ffff', height: 4, },
+                tabBarIndicatorStyle: { backgroundColor: '#f2f2f2', height: 4, },
                 lazy: true,
             }}
         >

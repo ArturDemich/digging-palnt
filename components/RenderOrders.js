@@ -33,16 +33,15 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         width: '100%',
-        paddingLeft: 5,
-        paddingRight: 5,
-        paddingBottom: 10,
+        paddingBottom: 5,
     },
     orderInfo: {
         height: 'auto',
-        borderBottomWidth: 2,
         paddingBottom: 10,
-        borderBottomColor: '#858585',
         backgroundColor: '#eef9ee',
+        paddingLeft: 5,
+        paddingRight: 5,
+        borderRadius: 5,
     },
     infoContainer: {
         flexDirection: 'row',
@@ -72,7 +71,11 @@ const styles = StyleSheet.create({
     orderShipment: {
         height: 'auto',
         fontSize: 12,
-        fontWeight: 600
+        fontWeight: 600,
+        lineHeight: 25,
+        textShadowColor: 'rgba(0, 0, 0, 0.2)', // Колір тіні (чорний)
+        textShadowOffset: { width: 0, height: 0 }, // Відступ по горизонталі і вертикалі
+        textShadowRadius: 2, // Радіус тіні
     },
     quantity: {
         height: 'auto',
@@ -88,34 +91,50 @@ const styles = StyleSheet.create({
         height: 25,
         width: 25,
     },
-    toucheble: {
-        elevation: 1,
-        borderWidth: 0.1,
-        borderColor: '#0531000a'
-        }
+    toucheble: color => ({
+        elevation: 2,
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity: 0.5,
+        shadowRadius: 5,    
+        shadowColor: color,
+        paddingTop: 0,
+        paddingBottom: 0,
+        paddingLeft: 7,
+        paddingRight: 7,
+        borderRadius: 3,        
+    }),
+    shipment: {
+        flexDirection: 'row',
+        gap: 5,   
+    },
 })
 
 
-function RenderOrders({ orders, rightToChange }) {
+function RenderOrders({ orders, rightToChange, currentColor, scrollToTop }) {
     const dispatch = useDispatch()
     const [selectedAllOrder, setSelectedAllOrder] = useState(false)
     const { customerName, orderNo, shipmentMethod, shipmentDate, products, orderId, comment } = orders
 
     let qty = 0
     products.forEach(el => qty += el.qty)    
+
+    const searchPoint = async (value) => {
+        await dispatch(setSearchText(value))
+        scrollToTop()
+    }  
     
     return (
         <View style={styles.rowFront} >
             <View style={styles.costLineWrapper}>
                 <View style={styles.orderInfo}>
                     <View style={styles.infoContainer}>
-                    <TouchableOpacity style={{flex: 1}} onPress={() => dispatch(setSearchText(customerName))}>
+                    <TouchableOpacity style={{flex: 1}} onPress={() => searchPoint(customerName)}>
                         <Text style={styles.orderClient}
                             allowFontScaling={true}
                             maxFontSizeMultiplier={1}
                         >{customerName}</Text>
                         </TouchableOpacity>
-                        {rightToChange ?
+                        {rightToChange && products.length > 1 ? 
                             <Checkbox
                                 value={selectedAllOrder}
                                 color='#45aa45'
@@ -124,15 +143,26 @@ function RenderOrders({ orders, rightToChange }) {
                             /> : null}
                     </View>
                     <View style={styles.viewGroup}>
-                    <TouchableOpacity style={styles.toucheble} onPress={() => dispatch(setSearchText(shipmentMethod))}>
-                        <FontAwesome5 name="truck-loading" size={14} color="black" >
-                            <Text
-                                style={[styles.orderShipment, shipmentMethod.toLowerCase().includes('пошта') && allStyles.NPshipment ]}
-                                allowFontScaling={true}
-                                maxFontSizeMultiplier={1}
-                            ><Text style={styles.textStr}> {shipmentMethod}</Text> </Text>
-                        </FontAwesome5>
-                        </TouchableOpacity>
+                        <View style={styles.shipment}>
+                            <TouchableOpacity style={styles.toucheble(currentColor)} onPress={() => searchPoint(shipmentMethod)}>
+                                <FontAwesome5 name="truck-loading" size={14} color="black" >                                
+                                        <Text
+                                            style={[styles.orderShipment, shipmentMethod.toLowerCase().includes('пошта') && allStyles.NPshipment ]}
+                                            allowFontScaling={true}
+                                            maxFontSizeMultiplier={1}
+                                        ><Text style={styles.textStr}> {shipmentMethod}</Text> </Text>  
+                                </FontAwesome5>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.toucheble(currentColor)} onPress={() => searchPoint(shipmentDate)}>
+                                <MaterialCommunityIcons name="truck-delivery-outline" size={22} color="black" >
+                                    <Text
+                                        style={styles.orderShipment}
+                                        allowFontScaling={true}
+                                        maxFontSizeMultiplier={1}
+                                    > {shipmentDate} </Text>
+                                </MaterialCommunityIcons>
+                            </TouchableOpacity>
+                        </View>
                         <MaterialCommunityIcons name="pine-tree" size={20} color="black">
                             <MaterialCommunityIcons name="pine-tree" size={14} color="black" />
                             <Text
@@ -142,16 +172,7 @@ function RenderOrders({ orders, rightToChange }) {
                             > {qty} шт</Text>
                         </MaterialCommunityIcons>
                     </View>
-                    <View style={styles.viewGroup}>
-                    <TouchableOpacity onPress={() => dispatch(setSearchText(shipmentDate))}>
-                        <MaterialCommunityIcons name="truck-delivery-outline" size={22} color="black" >
-                            <Text
-                                style={styles.orderShipment}
-                                allowFontScaling={true}
-                                maxFontSizeMultiplier={1}
-                            > {shipmentDate}</Text>
-                        </MaterialCommunityIcons>
-                        </TouchableOpacity>
+                    <View style={{alignItems: 'flex-end'}}>                        
                         <MaterialCommunityIcons name="clipboard-list-outline" size={19} color="black">
                             <Text
                                 style={styles.orderNum}
@@ -175,6 +196,7 @@ function RenderOrders({ orders, rightToChange }) {
                             orderId={orderId}
                             prodactElem={elem}
                             selectedAllOrder={selectedAllOrder}
+                            scrollToTop={scrollToTop}
                         />
                     )}
                 </View>
@@ -183,5 +205,8 @@ function RenderOrders({ orders, rightToChange }) {
     )
 }
 
+const mapStateToProps = state => ({   
+    currentColor: state.currentColorStep,
+})
 
-export default memo(RenderOrders)
+export default connect(mapStateToProps)(memo(RenderOrders))

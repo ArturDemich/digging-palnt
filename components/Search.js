@@ -1,14 +1,15 @@
 import { connect, useDispatch } from "react-redux"
 import { MaterialIcons } from '@expo/vector-icons';
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useEffect, useState, useRef } from "react";
 import { setFilterOrders, setFilterPlants, setFilterQty, setSearchText  } from "../state/dataSlice";
 import { useRoute } from "@react-navigation/native";
+import { TextInput } from "react-native-web";
 
 
 
 function Search({orders, groupOrders, searchText}) {
-    const dispatch = useDispatch()   
+    const dispatch = useDispatch() 
     const [inputShow, setInputShow ] = useState(false)
     const route = useRoute()
     const inputRef = useRef(null)
@@ -139,14 +140,14 @@ function Search({orders, groupOrders, searchText}) {
     return (
         <View style={styles.container}>
             <TextInput
-                style={[styles.input, inputShow && styles.inputShow]}
+                style={[styles.input, { outline: 'none' }, inputShow && styles.inputShow]}
                 onChangeText={changeText}
                 value={searchText} 
                 ref={inputRef}
             />
             {inputShow && (
                 <TouchableOpacity onPress={() => clearInput()} style={styles.close}>
-                    <Text style={{fontWeight: 700}}> X </Text>
+                    <Text style={{fontWeight: 700, fontSize: 20}}> X </Text>
                 </TouchableOpacity>
             )}
             <TouchableOpacity onPress={() => setInputShow(true)}>
@@ -164,46 +165,66 @@ const mapStateToProps = state => ({
 })
 export default connect(mapStateToProps)(Search)
 
+const windowWidth = Dimensions.get('window').width;
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         flex: 1,
         alignItems: 'center',
-        height: 50,        
+        height: 50,    
+        position: 'relative',
+        zIndex: 1,
     },
-    input: {
-        borderWidth: 1,
-        display: 'none',
-        borderRadius: 5,
+    input: {       
+        position: 'relative',
+        display: 'none',        
+        zIndex: 1,
+        borderBottomLeftRadius: 4,
+        borderTopLeftRadius: 4,
         borderColor: '#7b7b7b',
+        borderWidth: 1,
         paddingLeft: 5,
-        width: '100%',
-        minWidth: 165,
-        maxWidth: 350,
-        height: 30,
+        height: 45,
+        width: windowWidth > 329 ? 300 : windowWidth * 0.8,
+        left: 115,
+        bottom: 3,
         shadowColor: 'black',
         shadowOffset: { width: 0, height: 0 },
         shadowOpacity: 0.9,
         shadowRadius: 100,
         alignSelf: 'flex-end',
-        backgroundColor: 'snow',
+        backgroundColor: 'snow',            
     },
     inputShow: {
-        display: 'flex'
+        display: 'flex',
     },
     icon:{
         shadowColor: 'black',
         shadowOffset: { width: 0, height: 0 },
         shadowOpacity: 0.4,
         shadowRadius: 4,
-        borderRadius: 10,
+        borderRadius: 5,
         marginLeft: 10,
-        marginRight: 5,
+        marginRight: 1,
+        padding: 3,
         flex: 1
     },
     close: {
-        alignSelf: 'center',
-        right: 21,   
-        top: 11 
+        position: 'relative',
+        left: 115,
+        zIndex: 1,
+        backgroundColor: '#efefef',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 45,
+        width: 30,
+        borderBottomRightRadius: 4,
+        borderTopRightRadius: 4,
+        shadowColor: 'black',
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.9,
+        shadowRadius: 100,
+        borderColor: '#7b7b7b',
+        borderWidth: 1,
     }
 })

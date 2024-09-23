@@ -2,10 +2,11 @@ import Checkbox from "expo-checkbox"
 import { memo, useEffect, useState } from "react"
 import { SafeAreaView, StyleSheet, Text, TextInput, View } from "react-native"
 import { connect, useDispatch } from "react-redux"
-import { clearDataChangeItem, setDataChange } from "../state/dataSlice"
+import { clearDataChangeItem, setDataChange, setSearchText } from "../state/dataSlice"
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { FontAwesome5 } from '@expo/vector-icons'
 import { allStyles } from "../styles"
+import { TouchableOpacity } from "react-native"
 
 
 const styles = StyleSheet.create({
@@ -84,16 +85,21 @@ const styles = StyleSheet.create({
     },
 })
 
-function RenderOrderByGroup({ order, selectedAll, plant, currentStep, currentStorageId }) {
+function RenderOrderByGroup({ order, selectedAll, plant, currentStep, scrollToTop }) {
     const dispatch = useDispatch()
     const { orderId, orderNo, customerName, qty, shipmentDate, shipmentMethod, lastChange, comment } = order
-    const { characteristic, product, unit } = plant
+    const { characteristic, product, unit, storage } = plant
     const [orderCheckBox, setOrderCheckBox] = useState(selectedAll)
     const [qtyInput, setQtyInput] = useState(qty)
 
+    const searchPoint = async (value) => {
+        await dispatch(setSearchText(value))
+        scrollToTop()
+    }
+
     const setModalState = () => {
         const orders = {
-            storageId: currentStorageId,
+            storageId: storage.id,
             currentstepId: currentStep.id,
             orderId: orderId,
             productid: product.id,
@@ -133,6 +139,7 @@ function RenderOrderByGroup({ order, selectedAll, plant, currentStep, currentSto
                 orderId: orderId,
                 productid: product.id,
                 characteristicid: characteristic.id,
+                storageId: storage.id,
             }))
         } else if (orderCheckBox === true) {
             setModalState()
@@ -149,14 +156,15 @@ function RenderOrderByGroup({ order, selectedAll, plant, currentStep, currentSto
             <View style={styles.infoBlock}>
                 <View style={styles.orderInfoBlock}>
                     <View style={styles.orderNames}>
-                        <FontAwesome5 name="truck-loading" size={13} color="black" >
-                            <Text
-                                style={[styles.textStrong, shipmentMethod.toLowerCase().includes('пошта') && allStyles.NPshipment]}
-                                allowFontScaling={true}
-                                maxFontSizeMultiplier={1}
-                            > {shipmentMethod}</Text>
-                        </FontAwesome5>                        
-                        
+                        <TouchableOpacity style={{cursor: 'pointer'}} onPress={() => searchPoint(shipmentMethod)}>
+                            <FontAwesome5 name="truck-loading" size={13} color="black" >
+                                <Text
+                                    style={[styles.textStrong, shipmentMethod.toLowerCase().includes('пошта') && allStyles.NPshipment]}
+                                    allowFontScaling={true}
+                                    maxFontSizeMultiplier={1}
+                                > {shipmentMethod}</Text>
+                            </FontAwesome5>                        
+                        </TouchableOpacity>
                         <MaterialCommunityIcons name="truck-delivery-outline" size={18} color="black" >
                         <Text
                             style={styles.textClient}
@@ -223,8 +231,6 @@ function RenderOrderByGroup({ order, selectedAll, plant, currentStep, currentSto
 
 const mapStateToProps = state => ({
     currentStep: state.currentStep,
-    currentStorageId: state.currentStorageId,
-    groupOrders: state.groupOrders
 })
 
 export default connect(mapStateToProps)(memo(RenderOrderByGroup))
