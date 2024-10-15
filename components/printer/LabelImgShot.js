@@ -71,12 +71,29 @@ const LabelImgShot = ({ labelOff, dataChange }) => {
         <View >
             <ViewShot ref={ref}>
                 <View style={{ backgroundColor: '#ffffff', paddingLeft: 8, paddingRight: 10, paddingTop: 3,  maxWidth: 315 }}>
-                    <View style={{height: 85, borderBottomWidth: 2}} >
+                    <View style={{height: 85, borderBottomWidth: 2,}} >
                         <Text style={{ fontSize: 13, fontWeight: 600, }}>{item?.characteristicName}</Text>
-                        <MaterialCommunityIcons name="pine-tree" size={17} color="black">
-                            <Text style={{ fontSize: 14, fontWeight: 500, }}>{item?.productName}</Text>
-                        </MaterialCommunityIcons>
-                        
+                        <View style={{ height: 40, flexDirection: 'row', flex: 1, paddingRight: 8 }}>
+                            <MaterialCommunityIcons name="pine-tree" size={17} color="black" />
+                            <Text numberOfLines={2} style={{ fontSize: 14, fontWeight: 500, position: "relative", right: 0, top: 0 }}>{item?.productName}</Text>                        
+                       </View>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 3, paddingBottom: 2}}>
+                            <MaterialCommunityIcons name="pine-tree" size={14} color="black">
+                                <MaterialCommunityIcons name="shovel" size={17} color="black" />
+                                <Text
+                                    style={{ fontSize: 13, fontWeight: 900 }}
+                                    allowFontScaling={true}
+                                    maxFontSizeMultiplier={1}
+                                > {item?.totalQty} шт</Text>
+                            </MaterialCommunityIcons>
+                            <MaterialCommunityIcons name="clipboard-list-outline" size={15} color="black">
+                                <Text
+                                    style={{ fontSize: 13, fontWeight: 900 }}
+                                    allowFontScaling={true}
+                                    maxFontSizeMultiplier={1}
+                                >{item?.orderNo}</Text>
+                            </MaterialCommunityIcons>
+                        </View>
                     </View>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4, marginTop: 3 }} >
                         <Entypo name="location" size={17} color="black">

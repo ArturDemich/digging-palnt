@@ -8,7 +8,7 @@ import shortid from 'shortid'
 
 
 
-const RenderPlants = memo(({ orderId, selectedAllOrder, prodactElem, currentStep, shipmentMethod, customerName, currentColor, scrollToTop}) => {
+const RenderPlants = memo(({ orderId, selectedAllOrder, prodactElem, currentStep, shipmentMethod, customerName, currentColor, scrollToTop, orderNo}) => {
     const dispatch = useDispatch()
     const { characteristic, lastChange, product, qty, storage } = prodactElem    
 
@@ -62,7 +62,7 @@ const RenderPlants = memo(({ orderId, selectedAllOrder, prodactElem, currentStep
                         orderId={orderId} selectedAllOrder={selectedAllOrder} 
                         prodactElem={prodactElem} currentStep={currentStep} 
                         shipmentMethod={shipmentMethod} customerName={customerName} 
-                         key={shortid.generate()} /> 
+                         key={shortid.generate()} orderNo={orderNo} /> 
                         : null}
                 </View>
             </View>

@@ -109,7 +109,9 @@ const RenderOrderByGroup = memo(({ order, selectedAll, plant, currentStep, scrol
             characteristicName: characteristic.name,
             shipmentMethod: shipmentMethod,
             customerName: customerName,
-            currentStorage: storage.name
+            currentStorage: storage.name,
+            totalQty: Number(qty),
+            orderNo: orderNo,
         }
         dispatch(setDataChange(orders))
     }

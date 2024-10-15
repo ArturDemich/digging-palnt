@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     },
 })
 
-const renderItem = (orderId, elem, selectedAllOrder, shipmentMethod, customerName, scrollToTop) => {
+const renderItem = (orderId, elem, selectedAllOrder, shipmentMethod, customerName, scrollToTop, orderNo) => {
     return <RenderPlants
     key={shortid.generate()}
     orderId={orderId}
@@ -112,6 +112,7 @@ const renderItem = (orderId, elem, selectedAllOrder, shipmentMethod, customerNam
     selectedAllOrder={selectedAllOrder}
     shipmentMethod={shipmentMethod}
     customerName={customerName}
+    orderNo={orderNo}
     scrollToTop={scrollToTop}
 />
 }
@@ -197,7 +198,7 @@ const RenderOrders = memo(({ order, currentColor, scrollToTop, rightToChange }) 
                     </MaterialCommunityIcons>
                 </View>
                 <View >
-                    {products.map(elem => renderItem(orderId, elem, selectedAllOrder, shipmentMethod, customerName, scrollToTop)
+                    {products.map(elem => renderItem(orderId, elem, selectedAllOrder, shipmentMethod, customerName, scrollToTop, orderNo)
                         
                     )}
                 </View>

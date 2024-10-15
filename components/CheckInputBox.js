@@ -6,7 +6,7 @@ import { clearDataChangeItem, setDataChange } from "../state/dataSlice";
 
 
 
-const CheckInputBox = ({ orderId, selectedAllOrder, prodactElem, currentStep, shipmentMethod, customerName}) => {
+const CheckInputBox = ({ orderId, selectedAllOrder, prodactElem, currentStep, shipmentMethod, customerName, orderNo}) => {
     const dispatch = useDispatch()
 
     const { characteristic, product, qty, unit, storage } = prodactElem
@@ -34,11 +34,12 @@ const CheckInputBox = ({ orderId, selectedAllOrder, prodactElem, currentStep, sh
             characteristicid: characteristic.id,
             unitid: unit.id,
             actionqty: Number(qtyState),
-            qty: Number(qtyState),
+            totalQty: Number(qty),
             productName: product.name,
             characteristicName: characteristic.name,
             shipmentMethod: shipmentMethod,
             customerName: customerName,
+            orderNo: orderNo,
             currentStorage: storage.name
         }
         dispatch(setDataChange(orders))
